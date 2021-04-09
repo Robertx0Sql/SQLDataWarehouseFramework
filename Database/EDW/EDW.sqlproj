@@ -74,6 +74,16 @@
     <Folder Include="Dim\Stored Procedures" />
     <Folder Include="Dim" />
     <Folder Include="Dim\Tables" />
+    <Folder Include="Source\" />
+    <Folder Include="Source\Tables\" />
+    <Folder Include="ODS\" />
+    <Folder Include="ODS\Tables\" />
+    <Folder Include="LND\" />
+    <Folder Include="LND\Tables\" />
+    <Folder Include="stage\Views\" />
+    <Folder Include="Fact\" />
+    <Folder Include="Fact\Stored Procedures\" />
+    <Folder Include="ODS\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\ADM.sql" />
@@ -100,6 +110,18 @@
     <Build Include="Security\Fact.sql" />
     <Build Include="Security\stage.sql" />
     <Build Include="Dim\Tables\Date.sql" />
+    <Build Include="Dim\Tables\Customer.sql" />
+    <Build Include="Source\Tables\Customer.sql" />
+    <Build Include="ODS\Tables\Source_Customer.sql" />
+    <Build Include="LND\Tables\Source_Customer.sql" />
+    <Build Include="stage\Views\vw_Source_Customer.sql" />
+    <Build Include="Fact\Stored Procedures\usp_Orchestrate.sql" />
+    <Build Include="Dim\Stored Procedures\usp_UpdateCustomer.sql" />
+    <Build Include="Dim\Stored Procedures\usp_Orchestrate.sql" />
+    <Build Include="ODS\Stored Procedures\usp_UpdateSource_Customer.sql" />
+    <Build Include="Security\Source.sql" />
+    <Build Include="Security\ODS.sql" />
+    <Build Include="Security\LND.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment1.sql" />

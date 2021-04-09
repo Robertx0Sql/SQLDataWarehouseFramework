@@ -1,9 +1,8 @@
-﻿
-
-CREATE PROCEDURE [ADM].[usp_AddETLLOGSSIS] 
+﻿CREATE PROCEDURE [ADM].[usp_AddETLLOGSSIS] 
 	@PackageName VARCHAR(100) 
-	, @ExecutionId UNIQUEIDENTIFIER
+	,@ExecutionId UNIQUEIDENTIFIER
 	,@ProjectName VARCHAR(100)=NULL 
+	,@ParentLogId BIGINT = NULL
 AS
 BEGIN 
 SET NOCOUNT ON ;
@@ -16,9 +15,10 @@ SET NOCOUNT ON ;
 	INSERT INTO [ADM].[ETLLOG]
            ([source]
            ,[starttime]
-           ,[SSISExecutionGUId])
+           ,[SSISExecutionGUId]
+		   ,ParentLogId )
      VALUES
-           (@Source, GETUTCDATE() , @ExecutionId);
+           (@Source, GETUTCDATE() , @ExecutionId, @ParentLogId );
 	SET @LOGID = SCOPE_IDENTITY();
 	RETURN @LOGID;
 END;
