@@ -1,0 +1,2421 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/9/2021 11:21:34 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="LN03334A"
+  DTS:CreatorName="AD\cs016rm"
+  DTS:DTSID="{9DE40D1F-C797-4CF2-B567-7B70E568C9A7}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.3026.27"
+  DTS:LocaleID="2057"
+  DTS:ObjectName="Source_Customer"
+  DTS:PackageType="5"
+  DTS:VersionBuild="28"
+  DTS:VersionGUID="{7F19FBE4-517F-4D0B-B478-E128BEE39139}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Log]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{bc04b1e6-e149-499b-8319-48c55d25a1f2}"
+      DTS:ObjectName="Log">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::ODS_ConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=localhost;Initial Catalog=EDW;Provider=SQLNCLI11.1;Persist Security Info=False;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[ODS]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{695C7E5A-5CCA-4AA0-A8C1-90A2890164AC}"
+      DTS:ObjectName="ODS">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::ODS_ConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=localhost;Initial Catalog=EDW;Provider=SQLNCLI11.1;Persist Security Info=False;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Source]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{AC17E160-21B8-499C-90FB-86509BC92109}"
+      DTS:ObjectName="Source">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::Source_ConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=localhost;Initial Catalog=EDW;Provider=SQLNCLI11.1;Persist Security Info=False;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1D4FE923-7F73-41DE-AE31-F840FE760014}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="ContinueFlag">
+      <DTS:VariableValue
+        DTS:DataType="11">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{18893A18-6037-4DD0-AE35-F8E1F5348CD1}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DFTRowCount">
+      <DTS:VariableValue
+        DTS:DataType="3">-1</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{72F660C6-14D4-46CB-A617-AE7181A078DA}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ErrorMessage">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{594B911B-7EF1-49A2-ADBC-024364717C39}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastID">
+      <DTS:VariableValue
+        DTS:DataType="20">-10</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{26B21E9E-4572-4F60-AADB-BDAFCEA56315}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastUpdateDate">
+      <DTS:VariableValue
+        DTS:DataType="7">10/10/2018 3:57:47 PM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C8496F43-86BA-4467-9E8B-C997F5D269D4}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::ConnectionErrorRetryAttempts]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="MaxCondition">
+      <DTS:VariableValue
+        DTS:DataType="3">3</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{28BE9DDC-A1A4-4B58-9C78-7F147744EB5A}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="WhileCondition">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\SCR Verify ConnectionManagers"
+      DTS:CreationName="Microsoft.ScriptTask"
+      DTS:DTSID="{c5a445b4-2c66-4263-98df-f229f2e974ae}"
+      DTS:ExecutableType="Microsoft.ScriptTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SCR Verify ConnectionManagers"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ScriptProject
+          Name="ST_e8afcbb81ce24fcbb057f31630a1bc01"
+          VSTAMajorVersion="15"
+          VSTAMinorVersion="0"
+          Language="CSharp">
+          <ProjectItem
+            Name="Properties\resources.resx"
+            Encoding="UTF8"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string" />
+                            <xsd:attribute name="name" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    </root>]]></ProjectItem>
+          <ProjectItem
+            Name="Properties\settings.designer.cs"
+            Encoding="UTF8"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties.Settings.get_Default():ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties.Settings")]
+
+namespace ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties
+{
+
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
+        [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+        private static Settings defaultInstance = new Settings();
+
+        public static Settings Default
+        {
+            get
+            {
+                return defaultInstance;
+            }
+        }
+
+    }
+}]]></ProjectItem>
+          <ProjectItem
+            Name="ST_e8afcbb81ce24fcbb057f31630a1bc01.csproj"
+            Encoding="UTF16LE"><![CDATA[<?xml version="1.0" encoding="utf-16"?><Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"><PropertyGroup><Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration><Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform><OutputType>Library</OutputType><RootNamespace>ST_8f9138d2a91840acb2dc639ab1c75aee.csproj</RootNamespace><AssemblyName>ST_e8afcbb81ce24fcbb057f31630a1bc01</AssemblyName><ProjectGuid>{C792B577-3187-41B4-A778-35BF1292DEDE}</ProjectGuid><TargetFrameworkVersion>v4.5</TargetFrameworkVersion><TargetFrameworkProfile></TargetFrameworkProfile><ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch><ProjectTypeGuids>{30D016F9-3734-4E33-A861-5E7D899E18F3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids><NoStandardLibraries>false</NoStandardLibraries></PropertyGroup><PropertyGroup Condition=" '$(Configuration)' == 'Debug' "><DebugSymbols>true</DebugSymbols><Optimize>false</Optimize><OutputPath>.\bin\Debug\</OutputPath><EnableUnmanagedDebugging>false</EnableUnmanagedDebugging><DefineConstants>DEBUG;TRACE</DefineConstants><WarningLevel>4</WarningLevel></PropertyGroup><PropertyGroup Condition=" '$(Configuration)' == 'Release' "><DebugSymbols>false</DebugSymbols><Optimize>true</Optimize><OutputPath>.\bin\Release\</OutputPath><EnableUnmanagedDebugging>false</EnableUnmanagedDebugging><DefineConstants>TRACE</DefineConstants><WarningLevel>4</WarningLevel></PropertyGroup><PropertyGroup><PreBuildEvent></PreBuildEvent><PostBuildEvent></PostBuildEvent></PropertyGroup><ItemGroup><Reference Include="System" /><Reference Include="System.Data" /><Reference Include="System.Windows.Forms" /><Reference Include="System.Xml" /><Reference Include="Microsoft.SqlServer.ManagedDTS, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" /><Reference Include="Microsoft.SqlServer.ScriptTask, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" /></ItemGroup><ItemGroup><Folder Include="Resources\" /><AppDesigner Include="Properties\" /><EmbeddedResource Include="Properties\Resources.resx"><Generator>ResXFileCodeGenerator</Generator><LastGenOutput>Resources.Designer.cs</LastGenOutput></EmbeddedResource><Compile Include="Properties\Resources.Designer.cs"><AutoGen>True</AutoGen><DependentUpon>Resources.resx</DependentUpon><DesignTime>True</DesignTime></Compile><None Include="Properties\Settings.settings"><Generator>SettingsSingleFileGenerator</Generator><LastGenOutput>Settings.Designer.cs</LastGenOutput></None><Compile Include="Properties\Settings.Designer.cs"><AutoGen>True</AutoGen><DependentUpon>Settings.settings</DependentUpon><DesignTimeSharedInput>True</DesignTimeSharedInput></Compile><Compile Include="ScriptMain.cs"><SubType>Code</SubType></Compile><Compile Include="Properties\AssemblyInfo.cs"><SubType>Code</SubType></Compile></ItemGroup><!-- Include the build rules for a C# project.--><Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" /><!-- This section defines VSTA properties that describe the host-changable project properties. --><ProjectExtensions><VisualStudio><FlavorProperties GUID="{30D016F9-3734-4E33-A861-5E7D899E18F3}"><ProjectProperties HostName="VSTAHostName" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="#HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\9.0\InstallDir#\devenv.exe" /><Host Name="SSIS_ScriptTask" /><ProjectClient><HostIdentifier>SSIS_ST130</HostIdentifier></ProjectClient></FlavorProperties></VisualStudio></ProjectExtensions></Project>]]></ProjectItem>
+          <ProjectItem
+            Name="ScriptMain.cs"
+            Encoding="UTF8"><![CDATA[
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+
+namespace ST_Verify_ConnectionManagers
+{
+   
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        public void Main()
+        {
+            bool failure = false;
+            bool fireAgain = true;
+            try
+            {
+                foreach (var ConnMgr in Dts.Connections)
+                {
+                    //Dts.Events.FireInformation(1, "", String.Format("ConnectionManager='{0}', ConnectionString='{1}'", ConnMgr.Name, ConnMgr.ConnectionString), "", 0, ref fireAgain);
+                    try
+                    {
+                        ConnMgr.AcquireConnection(null);
+                        Dts.Events.FireInformation(1, "", String.Format("Connection acquired successfully on '{0}', ConnectionString='{1}'", ConnMgr.Name, ConnMgr.ConnectionString), "", 0, ref fireAgain);
+                    }
+                    catch (Exception ex)
+                    {
+                        Dts.Events.FireError(-1, "", String.Format("Failed to acquire connection to '{0}'. Error Message='{1}'", ConnMgr.Name, ex.Message), "", 0);
+                        failure = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Dts.Events.FireError(-1, "Verify_ConnectionManagers", String.Format("Error '{0}'\r\n{1}", ex.Message, ex.StackTrace), "", 0);
+            }
+            if (failure)
+                Dts.TaskResult = (int)ScriptResults.Failure;
+            else
+                Dts.TaskResult = (int)ScriptResults.Success;
+        }
+
+       
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+ 
+	}
+}]]></ProjectItem>
+          <ProjectItem
+            Name="Project"
+            Encoding="UTF16LE"><![CDATA[<?xml version="1.0" encoding="UTF-16" standalone="yes"?>
+<c:Project xmlns:c="http://schemas.microsoft.com/codeprojectml/2010/08/main" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" runtimeVersion="4.0" schemaVersion="1.0">
+	<msb:PropertyGroup>
+		<msb:ProjectId>{ca3e970b-5c6d-4e63-a595-775cf2ccd419}</msb:ProjectId>
+		<msb:NoContent>Reference;Import;Folder</msb:NoContent>
+		<msb:Language>msBuild</msb:Language>
+		<msb:DisplayName>ST_8f9138d2a91840acb2dc639ab1c75aee</msb:DisplayName>
+		<msb:CodeName>ST_8f9138d2a91840acb2dc639ab1c75aee</msb:CodeName>
+	</msb:PropertyGroup>
+	<msb:ItemGroup>
+				<msb:File Include="Properties\Resources.resx"/>
+		<msb:File Include="Properties\Settings.Designer.cs"/>
+				<msb:File Include="Properties\Resources.Designer.cs"/>
+				<msb:File Include="Properties\AssemblyInfo.cs"/>
+				<msb:File Include="ScriptMain.cs"/>
+								<msb:File Include="Properties\Settings.settings"/>
+						<msb:Project Include="ST_e8afcbb81ce24fcbb057f31630a1bc01.csproj"/>
+	</msb:ItemGroup>
+</c:Project>]]></ProjectItem>
+          <ProjectItem
+            Name="Properties\AssemblyInfo.cs"
+            Encoding="UTF8"><![CDATA[using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle("ST_da5508ca313b4b58a806babea7e85986")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("ST_da5508ca313b4b58a806babea7e85986")]
+[assembly: AssemblyCopyright("Copyright @  2018")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
+
+[assembly: AssemblyVersion("1.0.*")]]]></ProjectItem>
+          <ProjectItem
+            Name="Properties\settings.settings"
+            Encoding="UTF8"><![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"  >
+    <Profiles>
+        <Profile Name="(Default)" />
+    </Profiles>
+    <Settings /></SettingsFile>]]></ProjectItem>
+          <ProjectItem
+            Name="Properties\resources.designer.cs"
+            Encoding="UTF8"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties.Resources.get_ResourceManager():System.Resources.ResourceManager")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties.Resources.get_Culture():System.Globalization.CultureInfo")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties.Resources.set_Culture(System.Globalization.CultureInfo):Void")]
+
+namespace ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties {
+    using System;
+
+
+    /// <summary>
+    ///   A strongly-typed resource class, for looking up localized strings, etc.
+    /// </summary>
+    // This class was auto-generated by the StronglyTypedResourceBuilder
+    // class via a tool like ResGen or Visual Studio.
+    // To add or remove a member, edit your .ResX file then rerun ResGen
+    // with the /str option, or rebuild your VS project.
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    internal class Resources
+    {
+
+        private static global::System.Resources.ResourceManager resourceMan;
+
+        private static global::System.Globalization.CultureInfo resourceCulture;
+
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal Resources() {
+        }
+
+        /// <summary>
+        ///   Returns the cached ResourceManager instance used by this class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager
+        {
+            get {
+                if ((resourceMan == null))
+                {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = temp;
+                }
+                return resourceMan;
+            }
+        }
+
+        /// <summary>
+        ///   Overrides the current thread's CurrentUICulture property for all
+        ///   resource lookups using this strongly typed resource class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture
+        {
+            get {
+                return resourceCulture;
+            }
+            set {
+                resourceCulture = value;
+            }
+        }
+
+    }
+}]]></ProjectItem>
+          <BinaryItem
+            Name="\bin\release\ST_8f9138d2a91840acb2dc639ab1c75aee.csproj.dll">TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDABoVdVwAAAAAAAAAAOAAAiELAQsAABIAAAAIAAAAAAAAjjAA
+AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAEAAAAAAAAAACAAAAAAgAAAAAAAAMAQIUAABAA
+ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAEAwAABLAAAAAEAAACgEAAAAAAAAAAAAAAAAAAAA
+AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAIAAACAAAAAAAAAAAAAAACCAAAEgAAAAAAAAAAAAAAC50ZXh0AAAAlBAAAAAgAAAAEgAAAAIA
+AAAAAAAAAAAAAAAAACAAAGAucnNyYwAAACgEAAAAQAAAAAYAAAAUAAAAAAAAAAAAAAAAAABAAABA
+LnJlbG9jAAAMAAAAAGAAAAACAAAAGgAAAAAAAAAAAAAAAAAAQAAAQgAAAAAAAAAAAAAAAAAAAABw
+MAAAAAAAAEgAAAACAAUA6CEAAFgOAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAABswBwD6AAAAAQAAERYKFwsCKA0AAApvDgAACm8PAAAKEwUr
+fhEFbxAAAAoMCBRvEQAACiYCKA0AAApvEgAAChdyAQAAcHIDAABwCG8TAAAKCG8UAAAKKBUAAApy
+AQAAcBYSAW8WAAAK3jgNAigNAAAKbxIAAAoVcgEAAHByiAAAcAhvEwAACglvFwAACigVAAAKcgEA
+AHAWbxgAAAomFwreABEFbxkAAAo6dv///945EwQCKA0AAApvEgAAChVy/gAAcHIyAQBwEQRvFwAA
+ChEEbxoAAAooFQAACnIBAABwFm8YAAAKJt4ABiwNAigNAAAKF28bAAAKKgIoDQAAChZvGwAACioA
+AAEcAAAAACAAPl4AOBkAAAEAAAQAoKQAORkAAAEeAigcAAAKKhp+BAAABCoucwQAAAaABAAABCoe
+AigeAAAKKh4CKCEAAAoqABMwAgAtAAAAAgAAEX4FAAAELSByVAEAcNAFAAACKCIAAApvIwAACnMk
+AAAKCgaABQAABH4FAAAEKhp+BgAABCoeAoAGAAAEKkJTSkIBAAEAAAAAAAwAAAB2NC4wLjMwMzE5
+AAAAAAUAbAAAAAgEAAAjfgAAdAQAAGwGAAAjU3RyaW5ncwAAAADgCgAA1AEAACNVUwC0DAAAEAAA
+ACNHVUlEAAAAxAwAAJQBAAAjQmxvYgAAAAAAAAACAAABVx2iAQkCAAAA+iUzABYAAAEAAAAiAAAA
+BQAAAAYAAAAJAAAAAQAAACUAAAACAAAAEAAAAAIAAAACAAAAAwAAAAQAAAABAAAABAAAAAEAAAAA
+AAoAAQAAAAAABgAAAdcACgAsASUBDgBGATEBCgBeASUBCgC9AawBCgDuAdkBCgBWAkQCCgBtAkQC
+CgCKAkQCCgCpAkQCCgDCAkQCCgDbAkQCCgD2AkQCCgARA0QCCgAqA0QCCgBjA0MDCgCDA0MDBgDM
+A9cABgDuA9cAEgBHBCcEEgBjBCcEEgCGBCcEBgC2BNcACgDzBCUBCgARBSUBEgAxBScECgBmBUMD
+DgCgBYgFCgDKBbcFCgDnBSUBCgDsBSUBCgAQBkQCDgA8BiYGDgBVBiYGAAAAAAEAAAAAAAEAAQAB
+ABAAOQBEAAUAAQABAAMBAABhAAAACQABAAMAAAEQAG8AeAANAAQAAwAAABAArgB4ABEABQAGAAYG
+cAEXAFaAeAEaAFaAgAEaABEAiAEoABEAzQE2ABEA+gE6AFAgAAAAAIYAZQETAAEAdCEAAAAAhhhq
+ARMAAQB8IQAAAACWCJgBLAABAI8hAAAAAIYYagETAAEAgyEAAAAAkRiBBbAAAQCXIQAAAACDGGoB
+EwABAKAhAAAAAJMICgI+AAEA2SEAAAAAkwgeAkMAAQDgIQAAAACTCCoCSAABAAAAAQA+AjkAagFY
+AEEAagFYAEkAagFYAFEAagFYAFkAagFYAGEAagFYAGkAagFYAHEAagFYAHkAagFYAIEAagFdAIkA
+agETAJEAagETAAkAAARiAJkAUwRnAKEAeARsAKkAmARxALEApAR2AJkAygR7ALEA1QSAALEA3gSA
+AMEA+gSEALkAAQWLAMkAGwWAALkAJwWWANEAPwWfAMkASAWAAJkAVwVdAAkAagETANkAagETABkA
+agETAOEAagG0AOkAagETACEAagETAPEA/gX7APEAGQYCASkAagEIAQkBagEVAQgACAAeAAgADAAj
+AC4ACwAlAS4AEwBOAS4AWwB0AS4AIwBOAS4AUwBrAS4AKwAlAS4AOwBOAS4AGwBOAS4AMwBUAUMA
+YwAjAEkAKwEcAWkAKwEcAYEA6wAjAKMAAwEjAKMA+wC6AKMA6wAjAKMAEAEEAAEABQACAAAApAEx
+AAAAvQFOAAAANgJTAAIAAwADAAIABwAFAAIACAAHAAEACQAHAASAAAABAAAAVBvNSQAAAAAAAKED
+AAAOAAAAAAAAAAAAAAABALgAAAAAAAQAAAAAAAAAAAAAAAoAHAEAAAAABAAAAAAAAAAAAAAACgAl
+AQAAAAAOAAAAAAAAAAAAAAABAAgEAAAAAAMAAgAAAAA8TW9kdWxlPgBTVF84ZjkxMzhkMmE5MTg0
+MGFjYjJkYzYzOWFiMWM3NWFlZS5jc3Byb2ouZGxsAFNjcmlwdE1haW4AU1RfVmVyaWZ5X0Nvbm5l
+Y3Rpb25NYW5hZ2VycwBTY3JpcHRSZXN1bHRzAFNldHRpbmdzAFNUXzhmOTEzOGQyYTkxODQwYWNi
+MmRjNjM5YWIxYzc1YWVlLmNzcHJvai5Qcm9wZXJ0aWVzAFJlc291cmNlcwBNaWNyb3NvZnQuU3Fs
+U2VydmVyLlNjcmlwdFRhc2sATWljcm9zb2Z0LlNxbFNlcnZlci5EdHMuVGFza3MuU2NyaXB0VGFz
+awBWU1RBUlRTY3JpcHRPYmplY3RNb2RlbEJhc2UAbXNjb3JsaWIAU3lzdGVtAEVudW0AU3lzdGVt
+LkNvbmZpZ3VyYXRpb24AQXBwbGljYXRpb25TZXR0aW5nc0Jhc2UAT2JqZWN0AE1haW4ALmN0b3IA
+dmFsdWVfXwBTdWNjZXNzAEZhaWx1cmUAZGVmYXVsdEluc3RhbmNlAGdldF9EZWZhdWx0AERlZmF1
+bHQAU3lzdGVtLlJlc291cmNlcwBSZXNvdXJjZU1hbmFnZXIAcmVzb3VyY2VNYW4AU3lzdGVtLkds
+b2JhbGl6YXRpb24AQ3VsdHVyZUluZm8AcmVzb3VyY2VDdWx0dXJlAGdldF9SZXNvdXJjZU1hbmFn
+ZXIAZ2V0X0N1bHR1cmUAc2V0X0N1bHR1cmUAQ3VsdHVyZQB2YWx1ZQBTeXN0ZW0uUmVmbGVjdGlv
+bgBBc3NlbWJseVRpdGxlQXR0cmlidXRlAEFzc2VtYmx5RGVzY3JpcHRpb25BdHRyaWJ1dGUAQXNz
+ZW1ibHlDb25maWd1cmF0aW9uQXR0cmlidXRlAEFzc2VtYmx5Q29tcGFueUF0dHJpYnV0ZQBBc3Nl
+bWJseVByb2R1Y3RBdHRyaWJ1dGUAQXNzZW1ibHlDb3B5cmlnaHRBdHRyaWJ1dGUAQXNzZW1ibHlU
+cmFkZW1hcmtBdHRyaWJ1dGUAQXNzZW1ibHlDdWx0dXJlQXR0cmlidXRlAEFzc2VtYmx5VmVyc2lv
+bkF0dHJpYnV0ZQBTeXN0ZW0uUnVudGltZS5Db21waWxlclNlcnZpY2VzAENvbXBpbGF0aW9uUmVs
+YXhhdGlvbnNBdHRyaWJ1dGUAUnVudGltZUNvbXBhdGliaWxpdHlBdHRyaWJ1dGUAU1RfOGY5MTM4
+ZDJhOTE4NDBhY2IyZGM2MzlhYjFjNzVhZWUuY3Nwcm9qAFNTSVNTY3JpcHRUYXNrRW50cnlQb2lu
+dEF0dHJpYnV0ZQBTY3JpcHRPYmplY3RNb2RlbABnZXRfRHRzAE1pY3Jvc29mdC5TcWxTZXJ2ZXIu
+TWFuYWdlZERUUwBNaWNyb3NvZnQuU3FsU2VydmVyLkR0cy5SdW50aW1lAENvbm5lY3Rpb25zAGdl
+dF9Db25uZWN0aW9ucwBDb25uZWN0aW9uRW51bWVyYXRvcgBHZXRFbnVtZXJhdG9yAENvbm5lY3Rp
+b25NYW5hZ2VyAGdldF9DdXJyZW50AEFjcXVpcmVDb25uZWN0aW9uAEV2ZW50c09iamVjdFdyYXBw
+ZXIAZ2V0X0V2ZW50cwBnZXRfTmFtZQBnZXRfQ29ubmVjdGlvblN0cmluZwBTdHJpbmcARm9ybWF0
+AEZpcmVJbmZvcm1hdGlvbgBFeGNlcHRpb24AZ2V0X01lc3NhZ2UARmlyZUVycm9yAER0c0VudW1l
+cmF0b3IATW92ZU5leHQAZ2V0X1N0YWNrVHJhY2UAc2V0X1Rhc2tSZXN1bHQAQ29tcGlsZXJHZW5l
+cmF0ZWRBdHRyaWJ1dGUALmNjdG9yAFN5c3RlbS5Db2RlRG9tLkNvbXBpbGVyAEdlbmVyYXRlZENv
+ZGVBdHRyaWJ1dGUAU3lzdGVtLkRpYWdub3N0aWNzAERlYnVnZ2VyTm9uVXNlckNvZGVBdHRyaWJ1
+dGUAVHlwZQBSdW50aW1lVHlwZUhhbmRsZQBHZXRUeXBlRnJvbUhhbmRsZQBBc3NlbWJseQBnZXRf
+QXNzZW1ibHkAU3lzdGVtLkNvbXBvbmVudE1vZGVsAEVkaXRvckJyb3dzYWJsZUF0dHJpYnV0ZQBF
+ZGl0b3JCcm93c2FibGVTdGF0ZQAAAAABAICDQwBvAG4AbgBlAGMAdABpAG8AbgAgAGEAYwBxAHUA
+aQByAGUAZAAgAHMAdQBjAGMAZQBzAHMAZgB1AGwAbAB5ACAAbwBuACAAJwB7ADAAfQAnACwAIABD
+AG8AbgBuAGUAYwB0AGkAbwBuAFMAdAByAGkAbgBnAD0AJwB7ADEAfQAnAAF1RgBhAGkAbABlAGQA
+IAB0AG8AIABhAGMAcQB1AGkAcgBlACAAYwBvAG4AbgBlAGMAdABpAG8AbgAgAHQAbwAgACcAewAw
+AH0AJwAuACAARQByAHIAbwByACAATQBlAHMAcwBhAGcAZQA9ACcAewAxAH0AJwABM1YAZQByAGkA
+ZgB5AF8AQwBvAG4AbgBlAGMAdABpAG8AbgBNAGEAbgBhAGcAZQByAHMAACFFAHIAcgBvAHIAIAAn
+AHsAMAB9ACcADQAKAHsAMQB9AAF/UwBUAF8AOABmADkAMQAzADgAZAAyAGEAOQAxADgANAAwAGEA
+YwBiADIAZABjADYAMwA5AGEAYgAxAGMANwA1AGEAZQBlAC4AYwBzAHAAcgBvAGoALgBQAHIAbwBw
+AGUAcgB0AGkAZQBzAC4AUgBlAHMAbwB1AHIAYwBlAHMAAB1pgIBrAqZAmWHjvLaiEXwACImEXc2A
+gMyRCLd6XFYZNOCJAyAAAQIGCAMGEQwEAAAAAAQBAAAAAwYSEAQAABIQBAgAEhADBhIVAwYSGQQA
+ABIVBAAAEhkFAAEBEhkECAASFQQIABIZBCABAQ4EIAEBCAQgABJNBCAAElEEIAASVQQgABJZBCAB
+HBwEIAASXQMgAA4GAAMODhwcCiAGAQgODg4IEAIIIAUCCA4ODggDIAACDAcGAgISWRJlEmUSVQMA
+AAEFIAIBDg5AAQAzU3lzdGVtLlJlc291cmNlcy5Ub29scy5TdHJvbmdseVR5cGVkUmVzb3VyY2VC
+dWlsZGVyBzIuMC4wLjAAAAYAARJ5EX0FIAASgIEHIAIBDhKAgQQHARIVBiABARGAiQgBAAIAAAAA
+ACgBACNTVF9kYTU1MDhjYTMxM2I0YjU4YTgwNmJhYmVhN2U4NTk4NgAABQEAAAAAFgEAEUNvcHly
+aWdodCBAICAyMDE4AAAIAQAIAAAAAAAeAQABAFQCFldyYXBOb25FeGNlcHRpb25UaHJvd3MBAGgw
+AAAAAAAAAAAAAH4wAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwMAAAAAAAAAAAX0NvckRsbE1h
+aW4AbXNjb3JlZS5kbGwAAAAAAP8lACAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAEAEAAAABgAAIAAAAAAAAAAAAAAAAAAAAEAAQAAADAAAIAAAAAAAAAAAAAAAAAAAAEAAAAA
+AEgAAABYQAAA0AMAAAAAAAAAAAAA0AM0AAAAVgBTAF8AVgBFAFIAUwBJAE8ATgBfAEkATgBGAE8A
+AAAAAL0E7/4AAAEAAAABAM1JVBsAAAEAzUlUGz8AAAAAAAAABAAAAAIAAAAAAAAAAAAAAAAAAABE
+AAAAAQBWAGEAcgBGAGkAbABlAEkAbgBmAG8AAAAAACQABAAAAFQAcgBhAG4AcwBsAGEAdABpAG8A
+bgAAAAAAAACwBDADAAABAFMAdAByAGkAbgBnAEYAaQBsAGUASQBuAGYAbwAAAAwDAAABADAAMAAw
+ADAAMAA0AGIAMAAAAHAAJAABAEYAaQBsAGUARABlAHMAYwByAGkAcAB0AGkAbwBuAAAAAABTAFQA
+XwBkAGEANQA1ADAAOABjAGEAMwAxADMAYgA0AGIANQA4AGEAOAAwADYAYgBhAGIAZQBhADcAZQA4
+ADUAOQA4ADYAAABAAA8AAQBGAGkAbABlAFYAZQByAHMAaQBvAG4AAAAAADEALgAwAC4ANgA5ADkA
+NgAuADEAOAA4ADkAMwAAAAAAgAAvAAEASQBuAHQAZQByAG4AYQBsAE4AYQBtAGUAAABTAFQAXwA4
+AGYAOQAxADMAOABkADIAYQA5ADEAOAA0ADAAYQBjAGIAMgBkAGMANgAzADkAYQBiADEAYwA3ADUA
+YQBlAGUALgBjAHMAcAByAG8AagAuAGQAbABsAAAAAABIABIAAQBMAGUAZwBhAGwAQwBvAHAAeQBy
+AGkAZwBoAHQAAABDAG8AcAB5AHIAaQBnAGgAdAAgAEAAIAAgADIAMAAxADgAAACIAC8AAQBPAHIA
+aQBnAGkAbgBhAGwARgBpAGwAZQBuAGEAbQBlAAAAUwBUAF8AOABmADkAMQAzADgAZAAyAGEAOQAx
+ADgANAAwAGEAYwBiADIAZABjADYAMwA5AGEAYgAxAGMANwA1AGEAZQBlAC4AYwBzAHAAcgBvAGoA
+LgBkAGwAbAAAAAAAaAAkAAEAUAByAG8AZAB1AGMAdABOAGEAbQBlAAAAAABTAFQAXwBkAGEANQA1
+ADAAOABjAGEAMwAxADMAYgA0AGIANQA4AGEAOAAwADYAYgBhAGIAZQBhADcAZQA4ADUAOQA4ADYA
+AABEAA8AAQBQAHIAbwBkAHUAYwB0AFYAZQByAHMAaQBvAG4AAAAxAC4AMAAuADYAOQA5ADYALgAx
+ADgAOAA5ADMAAAAAAEgADwABAEEAcwBzAGUAbQBiAGwAeQAgAFYAZQByAHMAaQBvAG4AAAAxAC4A
+MAAuADYAOQA5ADYALgAxADgAOAA5ADMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAADAAAAJAwAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==</BinaryItem>
+        </ScriptProject>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SEQ Main"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DTSID="{235508bf-5c53-4ca8-ae84-877a1465f276}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SEQ Main">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery"
+          DTS:CreationName="STOCK:SEQUENCE"
+          DTS:DTSID="{bb300fc0-d7f0-4bc6-8e01-66baad0bbf27}"
+          DTS:ExecutableType="STOCK:SEQUENCE"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SEQ Load Data With Error Recovery">
+          <DTS:Variables />
+          <DTS:Executables>
+            <DTS:Executable
+              DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container"
+              DTS:CreationName="STOCK:SEQUENCE"
+              DTS:Description="Sequence Container"
+              DTS:DTSID="{30855cfe-b9b6-4f74-aeff-fe2bb8d2fe80}"
+              DTS:ExecutableType="STOCK:SEQUENCE"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Sequence Container">
+              <DTS:Variables />
+              <DTS:Executables>
+                <DTS:Executable
+                  DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\Save table lastupdate info  to log"
+                  DTS:CreationName="Microsoft.ExecuteSQLTask"
+                  DTS:Description="Execute SQL Task"
+                  DTS:Disabled="True"
+                  DTS:DTSID="{548787FE-BF24-46F7-A025-91072A4C3B3B}"
+                  DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+                  DTS:LocaleID="-1"
+                  DTS:ObjectName="Save table lastupdate info  to log"
+                  DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+                  DTS:ThreadHint="1">
+                  <DTS:Variables />
+                  <DTS:ObjectData>
+                    <SQLTask:SqlTaskData xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+                  </DTS:ObjectData>
+                </DTS:Executable>
+                <DTS:Executable
+                  DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Fail Load Data"
+                  DTS:CreationName="STOCK:SEQUENCE"
+                  DTS:DTSID="{91852668-f85d-4ec3-84f5-c82e1795e932}"
+                  DTS:ExecutableType="STOCK:SEQUENCE"
+                  DTS:LocaleID="-1"
+                  DTS:ObjectName="SEQ Fail Load Data">
+                  <DTS:Variables />
+                  <DTS:Executables>
+                    <DTS:Executable
+                      DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Fail Load Data\Log Error"
+                      DTS:CreationName="Microsoft.ExecuteSQLTask"
+                      DTS:DTSID="{6176fdf2-0d56-4737-bc0c-d0e140f46857}"
+                      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+                      DTS:LocaleID="-1"
+                      DTS:ObjectName="Log Error"
+                      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+                      DTS:ThreadHint="0">
+                      <DTS:Variables />
+                      <DTS:ObjectData>
+                        <SQLTask:SqlTaskData
+                          SQLTask:Connection="{bc04b1e6-e149-499b-8319-48c55d25a1f2}"
+                          SQLTask:SqlStatementSource="declare  @ExecutionId UNIQUEIDENTIFIER&#xA; ,@message NVARCHAR(2048) &#xA;set @ExecutionId =?&#xA;set @message =?&#xA;&#xA;EXEC [ADM].[usp_AddETLLOGError] @ExecutionId , @message " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                          <SQLTask:ParameterBinding
+                            SQLTask:ParameterName="0"
+                            SQLTask:DtsVariableName="System::ExecutionInstanceGUID"
+                            SQLTask:ParameterDirection="Input"
+                            SQLTask:DataType="130"
+                            SQLTask:ParameterSize="-1" />
+                          <SQLTask:ParameterBinding
+                            SQLTask:ParameterName="1"
+                            SQLTask:DtsVariableName="User::ErrorMessage"
+                            SQLTask:ParameterDirection="Input"
+                            SQLTask:DataType="130"
+                            SQLTask:ParameterSize="-1" />
+                        </SQLTask:SqlTaskData>
+                      </DTS:ObjectData>
+                    </DTS:Executable>
+                  </DTS:Executables>
+                </DTS:Executable>
+                <DTS:Executable
+                  DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data"
+                  DTS:CreationName="STOCK:SEQUENCE"
+                  DTS:DTSID="{750950fb-4e54-4fcd-8500-2d740afd059a}"
+                  DTS:ExecutableType="STOCK:SEQUENCE"
+                  DTS:LocaleID="-1"
+                  DTS:ObjectName="SEQ Load Data">
+                  <DTS:Variables />
+                  <DTS:Executables>
+                    <DTS:Executable
+                      DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data"
+                      DTS:CreationName="Microsoft.Pipeline"
+                      DTS:DTSID="{f176099d-2f0e-46ca-a724-a7a7e42bfc76}"
+                      DTS:ExecutableType="Microsoft.Pipeline"
+                      DTS:LocaleID="-1"
+                      DTS:ObjectName="DFT load Source_Customer data"
+                      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+                      <DTS:Variables />
+                      <DTS:EventHandlers>
+                        <DTS:EventHandler
+                          DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data.EventHandlers[OnError]"
+                          DTS:CreationName="OnError"
+                          DTS:DTSID="{1ecb7d66-7d3d-4409-9d7b-e2c7bfb00f3b}"
+                          DTS:EventID="0"
+                          DTS:EventName="OnError"
+                          DTS:LocaleID="-1">
+                          <DTS:Variables>
+                            <DTS:Variable
+                              DTS:CreationName=""
+                              DTS:Description="The propagate property of the event"
+                              DTS:DTSID="{7ba19e2c-30c7-491e-95ba-4b8019fdbe77}"
+                              DTS:IncludeInDebugDump="6789"
+                              DTS:Namespace="System"
+                              DTS:ObjectName="Propagate">
+                              <DTS:VariableValue
+                                DTS:DataType="11">-1</DTS:VariableValue>
+                            </DTS:Variable>
+                          </DTS:Variables>
+                          <DTS:Executables />
+                        </DTS:EventHandler>
+                      </DTS:EventHandlers>
+                      <DTS:ObjectData>
+                        <pipeline
+                          BLOBTempStoragePath=""
+                          bufferTempStoragePath=""
+                          version="1">
+                          <components>
+                            <component
+                              refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\CNT Downloaded ROWS Source_Customer"
+                              componentClassID="Microsoft.RowCount"
+                              contactInfo="Row Count;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                              name="CNT Downloaded ROWS Source_Customer">
+                              <properties>
+                                <property
+                                  dataType="System.String"
+                                  description="Specifies the variable to hold the row count."
+                                  name="VariableName">User::DFTRowCount</property>
+                              </properties>
+                              <inputs>
+                                <input
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\CNT Downloaded ROWS Source_Customer.Inputs[OLE_SRC Source Source_Customer_Output_CNT Downloaded ROWS Source_Customer]"
+                                  hasSideEffects="true"
+                                  name="OLE_SRC Source Source_Customer_Output_CNT Downloaded ROWS Source_Customer">
+                                  <externalMetadataColumns />
+                                </input>
+                              </inputs>
+                              <outputs>
+                                <output
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\CNT Downloaded ROWS Source_Customer.Outputs[Output]"
+                                  name="Output"
+                                  synchronousInputId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\CNT Downloaded ROWS Source_Customer.Inputs[OLE_SRC Source Source_Customer_Output_CNT Downloaded ROWS Source_Customer]">
+                                  <externalMetadataColumns />
+                                </output>
+                              </outputs>
+                            </component>
+                            <component
+                              refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer"
+                              componentClassID="Microsoft.OLEDBDestination"
+                              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                              name="OLE_DST Staging Source_Customer"
+                              usesDispositions="true"
+                              version="4">
+                              <properties>
+                                <property
+                                  dataType="System.Int32"
+                                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                                  name="CommandTimeout">0</property>
+                                <property
+                                  dataType="System.String"
+                                  description="Specifies the name of the database object used to open a rowset."
+                                  name="OpenRowset">[LND].[Source_Customer]</property>
+                                <property
+                                  dataType="System.String"
+                                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                                  name="OpenRowsetVariable"></property>
+                                <property
+                                  dataType="System.String"
+                                  description="The SQL command to be executed."
+                                  name="SqlCommand"
+                                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                                <property
+                                  dataType="System.Int32"
+                                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                                  name="DefaultCodePage">1252</property>
+                                <property
+                                  dataType="System.Boolean"
+                                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                                  name="AlwaysUseDefaultCodePage">false</property>
+                                <property
+                                  dataType="System.Int32"
+                                  description="Specifies the mode used to access the database."
+                                  name="AccessMode">3</property>
+                                <property
+                                  dataType="System.Boolean"
+                                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                                  name="FastLoadKeepIdentity">false</property>
+                                <property
+                                  dataType="System.Boolean"
+                                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                                  name="FastLoadKeepNulls">true</property>
+                                <property
+                                  dataType="System.String"
+                                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                                <property
+                                  dataType="System.Int32"
+                                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+                              </properties>
+                              <connections>
+                                <connection
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Connections[OleDbConnection]"
+                                  connectionManagerID="Package.ConnectionManagers[ODS]"
+                                  connectionManagerRefId="Package.ConnectionManagers[ODS]"
+                                  description="The OLE DB runtime connection used to access the database."
+                                  name="OleDbConnection" />
+                              </connections>
+                              <inputs>
+                                <input
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer]"
+                                  errorOrTruncationOperation="Insert"
+                                  errorRowDisposition="FailComponent"
+                                  hasSideEffects="true"
+                                  name="CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer">
+                                  <inputColumns>
+                                    <inputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].Columns[FirstName]"
+                                      cachedCodepage="1252"
+                                      cachedDataType="str"
+                                      cachedLength="100"
+                                      cachedName="FirstName"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[FirstName]"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[FirstName]" />
+                                    <inputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].Columns[CreatedOn]"
+                                      cachedDataType="dbTimeStamp"
+                                      cachedName="CreatedOn"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[CreatedOn]"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[CreatedOn]" />
+                                    <inputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].Columns[ModifiedOn]"
+                                      cachedDataType="dbTimeStamp"
+                                      cachedName="ModifiedOn"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[ModifiedOn]"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[ModifiedOn]" />
+                                  </inputColumns>
+                                  <externalMetadataColumns
+                                    isUsed="True">
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[FirstName]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="100"
+                                      name="FirstName" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[CreatedOn]"
+                                      dataType="dbTimeStamp"
+                                      name="CreatedOn" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[ModifiedOn]"
+                                      dataType="dbTimeStamp"
+                                      name="ModifiedOn" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[CustomerCode]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="10"
+                                      name="CustomerCode" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer].ExternalColumns[Surname]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="100"
+                                      name="Surname" />
+                                  </externalMetadataColumns>
+                                </input>
+                              </inputs>
+                              <outputs>
+                                <output
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Outputs[Error]"
+                                  exclusionGroup="1"
+                                  isErrorOut="true"
+                                  name="Error"
+                                  synchronousInputId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer]">
+                                  <outputColumns>
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Outputs[Error].Columns[ErrorCode]"
+                                      dataType="i4"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Outputs[Error].Columns[ErrorCode]"
+                                      name="ErrorCode"
+                                      specialFlags="1" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Outputs[Error].Columns[ErrorColumn]"
+                                      dataType="i4"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Outputs[Error].Columns[ErrorColumn]"
+                                      name="ErrorColumn"
+                                      specialFlags="2" />
+                                  </outputColumns>
+                                  <externalMetadataColumns />
+                                </output>
+                              </outputs>
+                            </component>
+                            <component
+                              refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer"
+                              componentClassID="Microsoft.OLEDBSource"
+                              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                              description="OLE DB Source"
+                              name="OLE_SRC Source Source_Customer"
+                              usesDispositions="true"
+                              version="7">
+                              <properties>
+                                <property
+                                  dataType="System.Int32"
+                                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                                  name="CommandTimeout">0</property>
+                                <property
+                                  dataType="System.String"
+                                  description="Specifies the name of the database object used to open a rowset."
+                                  name="OpenRowset"></property>
+                                <property
+                                  dataType="System.String"
+                                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                                  name="OpenRowsetVariable"></property>
+                                <property
+                                  dataType="System.String"
+                                  description="The SQL command to be executed."
+                                  name="SqlCommand"
+                                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT [CustomerCode]
+      ,[FirstName]
+      ,[Surname]
+      ,[CreatedOn]
+      ,[ModifiedOn]
+  FROM [Source].[Customer]
+WHERE 
+([CreatedOn] &gt; ? OR [ModifiedOn]  &gt; ?)</property>
+                                <property
+                                  dataType="System.String"
+                                  description="The variable that contains the SQL command to be executed."
+                                  name="SqlCommandVariable"></property>
+                                <property
+                                  dataType="System.Int32"
+                                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                                  name="DefaultCodePage">1252</property>
+                                <property
+                                  dataType="System.Boolean"
+                                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                                  name="AlwaysUseDefaultCodePage">false</property>
+                                <property
+                                  dataType="System.Int32"
+                                  description="Specifies the mode used to access the database."
+                                  name="AccessMode"
+                                  typeConverter="AccessMode">2</property>
+                                <property
+                                  dataType="System.String"
+                                  description="The mappings between the parameters in the SQL command and variables."
+                                  name="ParameterMapping">"0:Input",{26B21E9E-4572-4F60-AADB-BDAFCEA56315};"1:Input",{26B21E9E-4572-4F60-AADB-BDAFCEA56315};</property>
+                              </properties>
+                              <connections>
+                                <connection
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Connections[OleDbConnection]"
+                                  connectionManagerID="Package.ConnectionManagers[Source]"
+                                  connectionManagerRefId="Package.ConnectionManagers[Source]"
+                                  description="The OLE DB runtime connection used to access the database."
+                                  name="OleDbConnection" />
+                              </connections>
+                              <outputs>
+                                <output
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output]"
+                                  name="OLE DB Source Output">
+                                  <outputColumns>
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[CustomerCode]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      errorOrTruncationOperation="Conversion"
+                                      errorRowDisposition="FailComponent"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[CustomerCode]"
+                                      length="10"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[CustomerCode]"
+                                      name="CustomerCode"
+                                      truncationRowDisposition="FailComponent" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[FirstName]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      errorOrTruncationOperation="Conversion"
+                                      errorRowDisposition="FailComponent"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[FirstName]"
+                                      length="100"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[FirstName]"
+                                      name="FirstName"
+                                      truncationRowDisposition="FailComponent" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[Surname]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      errorOrTruncationOperation="Conversion"
+                                      errorRowDisposition="FailComponent"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[Surname]"
+                                      length="100"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[Surname]"
+                                      name="Surname"
+                                      truncationRowDisposition="FailComponent" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[CreatedOn]"
+                                      dataType="dbTimeStamp"
+                                      errorOrTruncationOperation="Conversion"
+                                      errorRowDisposition="FailComponent"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[CreatedOn]"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[CreatedOn]"
+                                      name="CreatedOn"
+                                      truncationRowDisposition="FailComponent" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[ModifiedOn]"
+                                      dataType="dbTimeStamp"
+                                      errorOrTruncationOperation="Conversion"
+                                      errorRowDisposition="FailComponent"
+                                      externalMetadataColumnId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[ModifiedOn]"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].Columns[ModifiedOn]"
+                                      name="ModifiedOn"
+                                      truncationRowDisposition="FailComponent" />
+                                  </outputColumns>
+                                  <externalMetadataColumns
+                                    isUsed="True">
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[CustomerCode]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="10"
+                                      name="CustomerCode" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[FirstName]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="100"
+                                      name="FirstName" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[Surname]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="100"
+                                      name="Surname" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[CreatedOn]"
+                                      dataType="dbTimeStamp"
+                                      name="CreatedOn" />
+                                    <externalMetadataColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output].ExternalColumns[ModifiedOn]"
+                                      dataType="dbTimeStamp"
+                                      name="ModifiedOn" />
+                                  </externalMetadataColumns>
+                                </output>
+                                <output
+                                  refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output]"
+                                  isErrorOut="true"
+                                  name="OLE DB Source Error Output">
+                                  <outputColumns>
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[CustomerCode]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="10"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[CustomerCode]"
+                                      name="CustomerCode" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[FirstName]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="100"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[FirstName]"
+                                      name="FirstName" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[Surname]"
+                                      codePage="1252"
+                                      dataType="str"
+                                      length="100"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[Surname]"
+                                      name="Surname" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[CreatedOn]"
+                                      dataType="dbTimeStamp"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[CreatedOn]"
+                                      name="CreatedOn" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[ModifiedOn]"
+                                      dataType="dbTimeStamp"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[ModifiedOn]"
+                                      name="ModifiedOn" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                                      dataType="i4"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                                      name="ErrorCode"
+                                      specialFlags="1" />
+                                    <outputColumn
+                                      refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                                      dataType="i4"
+                                      lineageId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                                      name="ErrorColumn"
+                                      specialFlags="2" />
+                                  </outputColumns>
+                                  <externalMetadataColumns />
+                                </output>
+                              </outputs>
+                            </component>
+                          </components>
+                          <paths>
+                            <path
+                              refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data.Paths[OLE DB Source Output]"
+                              endId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\CNT Downloaded ROWS Source_Customer.Inputs[OLE_SRC Source Source_Customer_Output_CNT Downloaded ROWS Source_Customer]"
+                              name="OLE DB Source Output"
+                              startId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer.Outputs[OLE DB Source Output]" />
+                            <path
+                              refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data.Paths[Output]"
+                              endId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer.Inputs[CNT Downloaded ROWS Source_Customer_Output_OLE_DST Staging Source_Customer]"
+                              name="Output"
+                              startId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\CNT Downloaded ROWS Source_Customer.Outputs[Output]" />
+                          </paths>
+                        </pipeline>
+                      </DTS:ObjectData>
+                    </DTS:Executable>
+                    <DTS:Executable
+                      DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\SCR Write Variable Status to Log"
+                      DTS:CreationName="Microsoft.ScriptTask"
+                      DTS:DTSID="{6ee05d9f-4fa5-4381-ba14-d7bc3f391abd}"
+                      DTS:ExecutableType="Microsoft.ScriptTask"
+                      DTS:LocaleID="-1"
+                      DTS:ObjectName="SCR Write Variable Status to Log"
+                      DTS:ThreadHint="0">
+                      <DTS:Variables />
+                      <DTS:ObjectData>
+                        <ScriptProject
+                          Name="ST_091f18843440493eb12b7c197d835bba"
+                          VSTAMajorVersion="15"
+                          VSTAMinorVersion="0"
+                          Language="CSharp"
+                          ReadOnlyVariables="User::LastID,User::LastUpdateDate">
+                          <ProjectItem
+                            Name="Properties\settings.settings"
+                            Encoding="UTF8"><![CDATA[<?xml version="1.0" encoding="iso-8859-1"?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"  >
+    <Profiles>
+        <Profile Name="(Default)" />
+    </Profiles>
+    <Settings /></SettingsFile>]]></ProjectItem>
+                          <ProjectItem
+                            Name="Properties\resources.resx"
+                            Encoding="UTF8"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string" />
+                            <xsd:attribute name="name" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    </root>]]></ProjectItem>
+                          <ProjectItem
+                            Name="ST_091f18843440493eb12b7c197d835bba.csproj"
+                            Encoding="UTF16LE"><![CDATA[<?xml version="1.0" encoding="utf-16"?><Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"><PropertyGroup><Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration><Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform><OutputType>Library</OutputType><RootNamespace>ST_19f9433aa95847ce9b7682c512687d2b.csproj</RootNamespace><AssemblyName>ST_091f18843440493eb12b7c197d835bba</AssemblyName><ProjectGuid>{C792B577-3187-41B4-A778-35BF1292DEDE}</ProjectGuid><TargetFrameworkVersion>v4.5</TargetFrameworkVersion><TargetFrameworkProfile></TargetFrameworkProfile><ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch><ProjectTypeGuids>{30D016F9-3734-4E33-A861-5E7D899E18F3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids><NoStandardLibraries>false</NoStandardLibraries></PropertyGroup><PropertyGroup Condition=" '$(Configuration)' == 'Debug' "><DebugSymbols>true</DebugSymbols><Optimize>false</Optimize><OutputPath>.\bin\Debug\</OutputPath><EnableUnmanagedDebugging>false</EnableUnmanagedDebugging><DefineConstants>DEBUG;TRACE</DefineConstants><WarningLevel>4</WarningLevel></PropertyGroup><PropertyGroup Condition=" '$(Configuration)' == 'Release' "><DebugSymbols>false</DebugSymbols><Optimize>true</Optimize><OutputPath>.\bin\Release\</OutputPath><EnableUnmanagedDebugging>false</EnableUnmanagedDebugging><DefineConstants>TRACE</DefineConstants><WarningLevel>4</WarningLevel></PropertyGroup><PropertyGroup><PreBuildEvent></PreBuildEvent><PostBuildEvent></PostBuildEvent></PropertyGroup><ItemGroup><Reference Include="System" /><Reference Include="System.Data" /><Reference Include="System.Windows.Forms" /><Reference Include="System.Xml" /><Reference Include="Microsoft.SqlServer.ManagedDTS, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" /><Reference Include="Microsoft.SqlServer.ScriptTask, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" /></ItemGroup><ItemGroup><Folder Include="Resources\" /><AppDesigner Include="Properties\" /><EmbeddedResource Include="Properties\Resources.resx"><Generator>ResXFileCodeGenerator</Generator><LastGenOutput>Resources.Designer.cs</LastGenOutput></EmbeddedResource><Compile Include="Properties\Resources.Designer.cs"><AutoGen>True</AutoGen><DependentUpon>Resources.resx</DependentUpon><DesignTime>True</DesignTime></Compile><None Include="Properties\Settings.settings"><Generator>SettingsSingleFileGenerator</Generator><LastGenOutput>Settings.Designer.cs</LastGenOutput></None><Compile Include="Properties\Settings.Designer.cs"><AutoGen>True</AutoGen><DependentUpon>Settings.settings</DependentUpon><DesignTimeSharedInput>True</DesignTimeSharedInput></Compile><Compile Include="ScriptMain.cs"><SubType>Code</SubType></Compile><Compile Include="Properties\AssemblyInfo.cs"><SubType>Code</SubType></Compile></ItemGroup><!-- Include the build rules for a C# project.--><Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" /><!-- This section defines VSTA properties that describe the host-changable project properties. --><ProjectExtensions><VisualStudio><FlavorProperties GUID="{30D016F9-3734-4E33-A861-5E7D899E18F3}"><ProjectProperties HostName="VSTAHostName" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="#HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\9.0\InstallDir#\devenv.exe" /><Host Name="SSIS_ScriptTask" /><ProjectClient><HostIdentifier>SSIS_ST130</HostIdentifier></ProjectClient></FlavorProperties></VisualStudio></ProjectExtensions></Project>]]></ProjectItem>
+                          <ProjectItem
+                            Name="ScriptMain.cs"
+                            Encoding="UTF8"><![CDATA[using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+
+namespace ST_59039bee71dc43668a57aa93d4b0f5d4
+{
+   
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        public void Main()
+        {
+            bool fireAgain = true;
+            bool failure = false;
+            try
+            {
+                //   User::LastID,User::LastUpdateDate
+                long LastID = (long)Dts.Variables["User::LastID"].Value;
+
+                DateTime LastUpdateDate = (DateTime)Dts.Variables["User::LastUpdateDate"].Value;
+
+
+                Dts.Events.FireInformation(1, "", String.Format("Log: LastID '{0}', LastUpdateDate '{1}'", LastID, LastUpdateDate), "", 0, ref fireAgain);
+            }
+            catch (Exception ex)
+            {
+                failure = true;
+                Dts.Events.FireError(18, "Process Values", string.Format("Error '{0}'", ex.Message), "", 0);
+            }
+            if (failure)
+                Dts.TaskResult = (int)ScriptResults.Failure;
+            else
+                Dts.TaskResult = (int)ScriptResults.Success;
+        }
+
+       
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+       
+
+	}
+}]]></ProjectItem>
+                          <ProjectItem
+                            Name="Project"
+                            Encoding="UTF16LE"><![CDATA[<?xml version="1.0" encoding="UTF-16" standalone="yes"?>
+<c:Project xmlns:c="http://schemas.microsoft.com/codeprojectml/2010/08/main" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" runtimeVersion="4.0" schemaVersion="1.0">
+	<msb:PropertyGroup>
+		<msb:ProjectId>{1f5aa552-f895-4dfb-aad2-dd2ad8cf2eff}</msb:ProjectId>
+		<msb:NoContent>Reference;Import;Folder</msb:NoContent>
+		<msb:Language>msBuild</msb:Language>
+		<msb:DisplayName>ST_19f9433aa95847ce9b7682c512687d2b</msb:DisplayName>
+		<msb:CodeName>ST_19f9433aa95847ce9b7682c512687d2b</msb:CodeName>
+	</msb:PropertyGroup>
+	<msb:ItemGroup>
+				<msb:File Include="Properties\Resources.resx"/>
+		<msb:File Include="Properties\Settings.Designer.cs"/>
+				<msb:File Include="Properties\Resources.Designer.cs"/>
+				<msb:File Include="Properties\AssemblyInfo.cs"/>
+				<msb:File Include="ScriptMain.cs"/>
+								<msb:File Include="Properties\Settings.settings"/>
+						<msb:Project Include="ST_091f18843440493eb12b7c197d835bba.csproj"/>
+	</msb:ItemGroup>
+</c:Project>]]></ProjectItem>
+                          <ProjectItem
+                            Name="Properties\settings.designer.cs"
+                            Encoding="UTF8"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties.Settings.get_Default():ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties.Settings")]
+
+namespace ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties
+{
+
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
+        [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+        private static Settings defaultInstance = new Settings();
+
+        public static Settings Default
+        {
+            get
+            {
+                return defaultInstance;
+            }
+        }
+
+    }
+}]]></ProjectItem>
+                          <ProjectItem
+                            Name="Properties\AssemblyInfo.cs"
+                            Encoding="UTF8"><![CDATA[using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle("ST_59039bee71dc43668a57aa93d4b0f5d4")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("ST_59039bee71dc43668a57aa93d4b0f5d4")]
+[assembly: AssemblyCopyright("Copyright @  2018")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
+
+[assembly: AssemblyVersion("1.0.*")]]]></ProjectItem>
+                          <ProjectItem
+                            Name="Properties\resources.designer.cs"
+                            Encoding="UTF8"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties.Resources.get_ResourceManager():System.Resources.ResourceManager")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties.Resources.get_Culture():System.Globalization.CultureInfo")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties.Resources.set_Culture(System.Globalization.CultureInfo):Void")]
+
+namespace ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties {
+    using System;
+
+
+    /// <summary>
+    ///   A strongly-typed resource class, for looking up localized strings, etc.
+    /// </summary>
+    // This class was auto-generated by the StronglyTypedResourceBuilder
+    // class via a tool like ResGen or Visual Studio.
+    // To add or remove a member, edit your .ResX file then rerun ResGen
+    // with the /str option, or rebuild your VS project.
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    internal class Resources
+    {
+
+        private static global::System.Resources.ResourceManager resourceMan;
+
+        private static global::System.Globalization.CultureInfo resourceCulture;
+
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal Resources() {
+        }
+
+        /// <summary>
+        ///   Returns the cached ResourceManager instance used by this class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager
+        {
+            get {
+                if ((resourceMan == null))
+                {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ST_19f9433aa95847ce9b7682c512687d2b.csproj.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = temp;
+                }
+                return resourceMan;
+            }
+        }
+
+        /// <summary>
+        ///   Overrides the current thread's CurrentUICulture property for all
+        ///   resource lookups using this strongly typed resource class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture
+        {
+            get {
+                return resourceCulture;
+            }
+            set {
+                resourceCulture = value;
+            }
+        }
+
+    }
+}]]></ProjectItem>
+                          <BinaryItem
+                            Name="\bin\release\ST_19f9433aa95847ce9b7682c512687d2b.csproj.dll">TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDABoVdVwAAAAAAAAAAOAAAiELAQsAABAAAAAIAAAAAAAATi8A
+AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAEAAAAAAAAAACAAAAAAgAAAAAAAAMAQIUAABAA
+ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAPwuAABPAAAAAEAAACgEAAAAAAAAAAAAAAAAAAAA
+AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAIAAACAAAAAAAAAAAAAAACCAAAEgAAAAAAAAAAAAAAC50ZXh0AAAAVA8AAAAgAAAAEAAAAAIA
+AAAAAAAAAAAAAAAAACAAAGAucnNyYwAAACgEAAAAQAAAAAYAAAASAAAAAAAAAAAAAAAAAABAAABA
+LnJlbG9jAAAMAAAAAGAAAAACAAAAGAAAAAAAAAAAAAAAAAAAQAAAQgAAAAAAAAAAAAAAAAAAAAAw
+LwAAAAAAAEgAAAACAAUArCEAAFANAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAABswBwDMAAAAAQAAERcKFgsCKA0AAApvDgAACnIBAABwbw8A
+AApvEAAACqUWAAABDAIoDQAACm8OAAAKchsAAHBvDwAACm8QAAAKpRcAAAENAigNAAAKbxEAAAoX
+ckUAAHByRwAAcAiMFgAAAQmMFwAAASgSAAAKckUAAHAWEgBvEwAACt41EwQXCwIoDQAACm8RAAAK
+HxJylwAAcHK1AABwEQRvFAAACigVAAAKckUAAHAWbxYAAAom3gAHLA0CKA0AAAoXbxcAAAoqAigN
+AAAKFm8XAAAKKgEQAAAAAAQAdnoANRoAAAEeAigYAAAKKhp+BAAABCoucwQAAAaABAAABCoeAiga
+AAAKKh4CKB0AAAoqABMwAgAtAAAAAgAAEX4FAAAELSByzQAAcNAFAAACKB4AAApvHwAACnMgAAAK
+CgaABQAABH4FAAAEKhp+BgAABCoeAoAGAAAEKkJTSkIBAAEAAAAAAAwAAAB2NC4wLjMwMzE5AAAA
+AAUAbAAAAPADAAAjfgAAXAQAAAQGAAAjU3RyaW5ncwAAAABgCgAAUAEAACNVUwCwCwAAEAAAACNH
+VUlEAAAAwAsAAJABAAAjQmxvYgAAAAAAAAACAAABVx2iAQkCAAAA+iUzABYAAAEAAAAiAAAABQAA
+AAYAAAAJAAAAAQAAACEAAAACAAAAEAAAAAIAAAACAAAAAwAAAAQAAAABAAAABAAAAAEAAAAAAAoA
+AQAAAAAABgAHAd4ACgAzASwBDgBNATgBCgBlASwBCgDEAbMBCgD1AeABCgBdAksCCgB0AksCCgCR
+AksCCgCwAksCCgDJAksCCgDiAksCCgD9AksCCgAYA0sCCgAxA0sCCgBqA0oDCgCKA0oDBgDTA94A
+BgD1A94AEgBOBC4EEgBmBC4ECgCCBCwBCgCIBCwBBgCRBN4ACgCwBCwBCgDOBCwBCgD9BEoDDgA3
+BR8FCgBhBU4FCgB+BSwBCgCDBSwBCgCnBUsCDgDTBb0FDgDsBb0FAAAAAAEAAAAAAAEAAQABABAA
+OQBEAAUAAQABAAMBAABoAAAACQABAAMAAAEQAHYAfwANAAQAAwAAABAAtQB/ABEABQAGAAYGdwEX
+AFaAfwEaAFaAhwEaABEAjwEoABEA1AE2ABEAAQI6AFAgAAAAAIYAbAETAAEAOCEAAAAAhhhxARMA
+AQBAIQAAAACWCJ8BLAABAFMhAAAAAIYYcQETAAEARyEAAAAAkRgYBaoAAQBbIQAAAACDGHEBEwAB
+AGQhAAAAAJMIEQI+AAEAnSEAAAAAkwglAkMAAQCkIQAAAACTCDECSAABAAAAAQBFAjkAcQFYAEEA
+cQFYAEkAcQFYAFEAcQFYAFkAcQFYAGEAcQFYAGkAcQFYAHEAcQFYAHkAcQFYAIEAcQFdAIkAcQET
+AJEAcQETAAkABwRiAJkAWARnAKEAbwRsAKkAeARyAJkApQR2AMkAtwR7AMEAvgSCANEA2ASNAMkA
+twSRAMEA5ASXAJkA7gRdAAkAcQETANkAcQETABkAcQETAOEAcQGuAOkAcQETACEAcQETAPEAlQX1
+APEAsAX8ACkAcQECAQkBcQEPAQgACAAeAAgADAAjAC4ACwAfAS4AEwBIAS4AWwBuAS4AIwBIAS4A
+UwBlAS4AKwAfAS4AOwBIAS4AGwBIAS4AMwBOAUMAYwAjAEkACwEWAWkACwEWAYEAywAjAKMA4wAj
+AKMA2wC0AKMAywAjAKAACgEEAAEABQACAAAAqwExAAAAxAFOAAAAPQJTAAIAAwADAAIABwAFAAIA
+CAAHAAEACQAHAASAAAABAAAAVBvNSQAAAAAAAKgDAAAOAAAAAAAAAAAAAAABAL8AAAAAAAQAAAAA
+AAAAAAAAAAoAIwEAAAAABAAAAAAAAAAAAAAACgAsAQAAAAAOAAAAAAAAAAAAAAABAA8EAAAAAAMA
+AgAAAAA8TW9kdWxlPgBTVF8xOWY5NDMzYWE5NTg0N2NlOWI3NjgyYzUxMjY4N2QyYi5jc3Byb2ou
+ZGxsAFNjcmlwdE1haW4AU1RfNTkwMzliZWU3MWRjNDM2NjhhNTdhYTkzZDRiMGY1ZDQAU2NyaXB0
+UmVzdWx0cwBTZXR0aW5ncwBTVF8xOWY5NDMzYWE5NTg0N2NlOWI3NjgyYzUxMjY4N2QyYi5jc3By
+b2ouUHJvcGVydGllcwBSZXNvdXJjZXMATWljcm9zb2Z0LlNxbFNlcnZlci5TY3JpcHRUYXNrAE1p
+Y3Jvc29mdC5TcWxTZXJ2ZXIuRHRzLlRhc2tzLlNjcmlwdFRhc2sAVlNUQVJUU2NyaXB0T2JqZWN0
+TW9kZWxCYXNlAG1zY29ybGliAFN5c3RlbQBFbnVtAFN5c3RlbS5Db25maWd1cmF0aW9uAEFwcGxp
+Y2F0aW9uU2V0dGluZ3NCYXNlAE9iamVjdABNYWluAC5jdG9yAHZhbHVlX18AU3VjY2VzcwBGYWls
+dXJlAGRlZmF1bHRJbnN0YW5jZQBnZXRfRGVmYXVsdABEZWZhdWx0AFN5c3RlbS5SZXNvdXJjZXMA
+UmVzb3VyY2VNYW5hZ2VyAHJlc291cmNlTWFuAFN5c3RlbS5HbG9iYWxpemF0aW9uAEN1bHR1cmVJ
+bmZvAHJlc291cmNlQ3VsdHVyZQBnZXRfUmVzb3VyY2VNYW5hZ2VyAGdldF9DdWx0dXJlAHNldF9D
+dWx0dXJlAEN1bHR1cmUAdmFsdWUAU3lzdGVtLlJlZmxlY3Rpb24AQXNzZW1ibHlUaXRsZUF0dHJp
+YnV0ZQBBc3NlbWJseURlc2NyaXB0aW9uQXR0cmlidXRlAEFzc2VtYmx5Q29uZmlndXJhdGlvbkF0
+dHJpYnV0ZQBBc3NlbWJseUNvbXBhbnlBdHRyaWJ1dGUAQXNzZW1ibHlQcm9kdWN0QXR0cmlidXRl
+AEFzc2VtYmx5Q29weXJpZ2h0QXR0cmlidXRlAEFzc2VtYmx5VHJhZGVtYXJrQXR0cmlidXRlAEFz
+c2VtYmx5Q3VsdHVyZUF0dHJpYnV0ZQBBc3NlbWJseVZlcnNpb25BdHRyaWJ1dGUAU3lzdGVtLlJ1
+bnRpbWUuQ29tcGlsZXJTZXJ2aWNlcwBDb21waWxhdGlvblJlbGF4YXRpb25zQXR0cmlidXRlAFJ1
+bnRpbWVDb21wYXRpYmlsaXR5QXR0cmlidXRlAFNUXzE5Zjk0MzNhYTk1ODQ3Y2U5Yjc2ODJjNTEy
+Njg3ZDJiLmNzcHJvagBTU0lTU2NyaXB0VGFza0VudHJ5UG9pbnRBdHRyaWJ1dGUAU2NyaXB0T2Jq
+ZWN0TW9kZWwAZ2V0X0R0cwBNaWNyb3NvZnQuU3FsU2VydmVyLk1hbmFnZWREVFMATWljcm9zb2Z0
+LlNxbFNlcnZlci5EdHMuUnVudGltZQBWYXJpYWJsZXMAZ2V0X1ZhcmlhYmxlcwBWYXJpYWJsZQBn
+ZXRfSXRlbQBnZXRfVmFsdWUASW50NjQARGF0ZVRpbWUARXZlbnRzT2JqZWN0V3JhcHBlcgBnZXRf
+RXZlbnRzAFN0cmluZwBGb3JtYXQARmlyZUluZm9ybWF0aW9uAEV4Y2VwdGlvbgBnZXRfTWVzc2Fn
+ZQBGaXJlRXJyb3IAc2V0X1Rhc2tSZXN1bHQAQ29tcGlsZXJHZW5lcmF0ZWRBdHRyaWJ1dGUALmNj
+dG9yAFN5c3RlbS5Db2RlRG9tLkNvbXBpbGVyAEdlbmVyYXRlZENvZGVBdHRyaWJ1dGUAU3lzdGVt
+LkRpYWdub3N0aWNzAERlYnVnZ2VyTm9uVXNlckNvZGVBdHRyaWJ1dGUAVHlwZQBSdW50aW1lVHlw
+ZUhhbmRsZQBHZXRUeXBlRnJvbUhhbmRsZQBBc3NlbWJseQBnZXRfQXNzZW1ibHkAU3lzdGVtLkNv
+bXBvbmVudE1vZGVsAEVkaXRvckJyb3dzYWJsZUF0dHJpYnV0ZQBFZGl0b3JCcm93c2FibGVTdGF0
+ZQAAAAAAGVUAcwBlAHIAOgA6AEwAYQBzAHQASQBEAAApVQBzAGUAcgA6ADoATABhAHMAdABVAHAA
+ZABhAHQAZQBEAGEAdABlAAABAE9MAG8AZwA6ACAATABhAHMAdABJAEQAIAAnAHsAMAB9ACcALAAg
+AEwAYQBzAHQAVQBwAGQAYQB0AGUARABhAHQAZQAgACcAewAxAH0AJwABHVAAcgBvAGMAZQBzAHMA
+IABWAGEAbAB1AGUAcwAAF0UAcgByAG8AcgAgACcAewAwAH0AJwABf1MAVABfADEAOQBmADkANAAz
+ADMAYQBhADkANQA4ADQANwBjAGUAOQBiADcANgA4ADIAYwA1ADEAMgA2ADgANwBkADIAYgAuAGMA
+cwBwAHIAbwBqAC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8AdQByAGMAZQBzAAAAAAAd
+K8MlpHVnQ4hbEkER19UtAAiJhF3NgIDMkQi3elxWGTTgiQMgAAECBggDBhEMBAAAAAAEAQAAAAMG
+EhAEAAASEAQIABIQAwYSFQMGEhkEAAASFQQAABIZBQABARIZBAgAEhUECAASGQQgAQEOBCABAQgE
+IAASTQQgABJRBSABElUcAyAAHAQgABJhBgADDg4cHAogBgEIDg4OCBACAyAADgUAAg4OHAggBQII
+Dg4OCAkHBQICChFdEmkDAAABBSACAQ4OQAEAM1N5c3RlbS5SZXNvdXJjZXMuVG9vbHMuU3Ryb25n
+bHlUeXBlZFJlc291cmNlQnVpbGRlcgcyLjAuMC4wAAAGAAESeRF9BSAAEoCBByACAQ4SgIEEBwES
+FQYgAQERgIkIAQACAAAAAAAoAQAjU1RfNTkwMzliZWU3MWRjNDM2NjhhNTdhYTkzZDRiMGY1ZDQA
+AAUBAAAAABYBABFDb3B5cmlnaHQgQCAgMjAxOAAACAEACAAAAAAAHgEAAQBUAhZXcmFwTm9uRXhj
+ZXB0aW9uVGhyb3dzAQAAACQvAAAAAAAAAAAAAD4vAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw
+LwAAAAAAAAAAAAAAAF9Db3JEbGxNYWluAG1zY29yZWUuZGxsAAAAAAD/JQAgABAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAABABAAAAAYAACAAAAAAAAAAAAAAAAAAAABAAEAAAAwAACAAAAAAAAAAAAAAAAAAAABAAAA
+AABIAAAAWEAAANADAAAAAAAAAAAAANADNAAAAFYAUwBfAFYARQBSAFMASQBPAE4AXwBJAE4ARgBP
+AAAAAAC9BO/+AAABAAAAAQDNSVQbAAABAM1JVBs/AAAAAAAAAAQAAAACAAAAAAAAAAAAAAAAAAAA
+RAAAAAEAVgBhAHIARgBpAGwAZQBJAG4AZgBvAAAAAAAkAAQAAABUAHIAYQBuAHMAbABhAHQAaQBv
+AG4AAAAAAAAAsAQwAwAAAQBTAHQAcgBpAG4AZwBGAGkAbABlAEkAbgBmAG8AAAAMAwAAAQAwADAA
+MAAwADAANABiADAAAABwACQAAQBGAGkAbABlAEQAZQBzAGMAcgBpAHAAdABpAG8AbgAAAAAAUwBU
+AF8ANQA5ADAAMwA5AGIAZQBlADcAMQBkAGMANAAzADYANgA4AGEANQA3AGEAYQA5ADMAZAA0AGIA
+MABmADUAZAA0AAAAQAAPAAEARgBpAGwAZQBWAGUAcgBzAGkAbwBuAAAAAAAxAC4AMAAuADYAOQA5
+ADYALgAxADgAOAA5ADMAAAAAAIAALwABAEkAbgB0AGUAcgBuAGEAbABOAGEAbQBlAAAAUwBUAF8A
+MQA5AGYAOQA0ADMAMwBhAGEAOQA1ADgANAA3AGMAZQA5AGIANwA2ADgAMgBjADUAMQAyADYAOAA3
+AGQAMgBiAC4AYwBzAHAAcgBvAGoALgBkAGwAbAAAAAAASAASAAEATABlAGcAYQBsAEMAbwBwAHkA
+cgBpAGcAaAB0AAAAQwBvAHAAeQByAGkAZwBoAHQAIABAACAAIAAyADAAMQA4AAAAiAAvAAEATwBy
+AGkAZwBpAG4AYQBsAEYAaQBsAGUAbgBhAG0AZQAAAFMAVABfADEAOQBmADkANAAzADMAYQBhADkA
+NQA4ADQANwBjAGUAOQBiADcANgA4ADIAYwA1ADEAMgA2ADgANwBkADIAYgAuAGMAcwBwAHIAbwBq
+AC4AZABsAGwAAAAAAGgAJAABAFAAcgBvAGQAdQBjAHQATgBhAG0AZQAAAAAAUwBUAF8ANQA5ADAA
+MwA5AGIAZQBlADcAMQBkAGMANAAzADYANgA4AGEANQA3AGEAYQA5ADMAZAA0AGIAMABmADUAZAA0
+AAAARAAPAAEAUAByAG8AZAB1AGMAdABWAGUAcgBzAGkAbwBuAAAAMQAuADAALgA2ADkAOQA2AC4A
+MQA4ADgAOQAzAAAAAABIAA8AAQBBAHMAcwBlAG0AYgBsAHkAIABWAGUAcgBzAGkAbwBuAAAAMQAu
+ADAALgA2ADkAOQA2AC4AMQA4ADgAOQAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAwAAABQPwAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</BinaryItem>
+                        </ScriptProject>
+                      </DTS:ObjectData>
+                    </DTS:Executable>
+                  </DTS:Executables>
+                  <DTS:PrecedenceConstraints>
+                    <DTS:PrecedenceConstraint
+                      DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data.PrecedenceConstraints[Constraint_SCR Write Variable Status to Log_To_DFT load Source_Customer data]"
+                      DTS:CreationName=""
+                      DTS:DTSID="{aa95c05d-a9ae-401c-abe4-963657841aa3}"
+                      DTS:From="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\SCR Write Variable Status to Log"
+                      DTS:LogicalAnd="True"
+                      DTS:ObjectName="Constraint_SCR Write Variable Status to Log_To_DFT load Source_Customer data"
+                      DTS:To="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data" />
+                  </DTS:PrecedenceConstraints>
+                  <DTS:EventHandlers>
+                    <DTS:EventHandler
+                      DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data.EventHandlers[OnError]"
+                      DTS:CreationName="OnError"
+                      DTS:DTSID="{d63d1c54-a930-460e-84f8-0312befa6959}"
+                      DTS:EventID="0"
+                      DTS:EventName="OnError"
+                      DTS:LocaleID="-1">
+                      <DTS:Variables>
+                        <DTS:Variable
+                          DTS:CreationName=""
+                          DTS:Description="The propagate property of the event"
+                          DTS:DTSID="{96a45296-8b00-43d6-bb4c-6499b80cc50f}"
+                          DTS:IncludeInDebugDump="6789"
+                          DTS:Namespace="System"
+                          DTS:ObjectName="Propagate">
+                          <DTS:VariableValue
+                            DTS:DataType="11">-1</DTS:VariableValue>
+                        </DTS:Variable>
+                      </DTS:Variables>
+                      <DTS:Executables>
+                        <DTS:Executable
+                          DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data.EventHandlers[OnError]\EXP Save error to user variable"
+                          DTS:CreationName="Microsoft.ExpressionTask"
+                          DTS:DTSID="{d9d96097-844e-44b0-9e7e-a75bdd7047cc}"
+                          DTS:ExecutableType="Microsoft.ExpressionTask"
+                          DTS:LocaleID="-1"
+                          DTS:ObjectName="EXP Save error to user variable"
+                          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+                          <DTS:Variables />
+                          <DTS:ObjectData>
+                            <ExpressionTask
+                              Expression="@[User::ErrorMessage] =  @[System::ErrorDescription]" />
+                          </DTS:ObjectData>
+                        </DTS:Executable>
+                      </DTS:Executables>
+                    </DTS:EventHandler>
+                  </DTS:EventHandlers>
+                </DTS:Executable>
+                <DTS:Executable
+                  DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ SUCCESS Load Data"
+                  DTS:CreationName="STOCK:SEQUENCE"
+                  DTS:DTSID="{dd8e2760-954c-4144-b5a3-8c879fbb2c9c}"
+                  DTS:ExecutableType="STOCK:SEQUENCE"
+                  DTS:LocaleID="-1"
+                  DTS:ObjectName="SEQ SUCCESS Load Data">
+                  <DTS:Variables />
+                  <DTS:Executables>
+                    <DTS:Executable
+                      DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ SUCCESS Load Data\SQL ODS MERGE Staging Table to Destination"
+                      DTS:CreationName="Microsoft.ExecuteSQLTask"
+                      DTS:DTSID="{1cf16949-0c2e-47a0-8d2b-a0aa3e52ee4f}"
+                      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+                      DTS:LocaleID="-1"
+                      DTS:ObjectName="SQL ODS MERGE Staging Table to Destination"
+                      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+                      DTS:ThreadHint="1">
+                      <DTS:Variables />
+                      <DTS:ObjectData>
+                        <SQLTask:SqlTaskData
+                          SQLTask:Connection="{695C7E5A-5CCA-4AA0-A8C1-90A2890164AC}"
+                          SQLTask:SqlStatementSource="EXEC ODS.usp_UpdateSource_Customer ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                          <SQLTask:ParameterBinding
+                            SQLTask:ParameterName="0"
+                            SQLTask:DtsVariableName="System::ServerExecutionID"
+                            SQLTask:ParameterDirection="Input"
+                            SQLTask:DataType="3"
+                            SQLTask:ParameterSize="-1" />
+                        </SQLTask:SqlTaskData>
+                      </DTS:ObjectData>
+                    </DTS:Executable>
+                  </DTS:Executables>
+                </DTS:Executable>
+              </DTS:Executables>
+              <DTS:PrecedenceConstraints>
+                <DTS:PrecedenceConstraint
+                  DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container.PrecedenceConstraints[Constraint]"
+                  DTS:CreationName=""
+                  DTS:DTSID="{1fdf4d58-b73f-4963-a747-fd433ee08508}"
+                  DTS:From="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data"
+                  DTS:LogicalAnd="True"
+                  DTS:ObjectName="Constraint"
+                  DTS:To="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ SUCCESS Load Data" />
+                <DTS:PrecedenceConstraint
+                  DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container.PrecedenceConstraints[Constraint 1]"
+                  DTS:CreationName=""
+                  DTS:DTSID="{2ec13dc6-e03f-4746-bcbf-b3bf7da730c3}"
+                  DTS:From="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data"
+                  DTS:LogicalAnd="True"
+                  DTS:ObjectName="Constraint 1"
+                  DTS:To="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Fail Load Data"
+                  DTS:Value="1" />
+                <DTS:PrecedenceConstraint
+                  DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container.PrecedenceConstraints[Constraint 2]"
+                  DTS:CreationName=""
+                  DTS:DTSID="{C16C0DC8-7707-48B8-8B58-6D616326B554}"
+                  DTS:From="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ SUCCESS Load Data"
+                  DTS:LogicalAnd="True"
+                  DTS:ObjectName="Constraint 2"
+                  DTS:To="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\Save table lastupdate info  to log" />
+              </DTS:PrecedenceConstraints>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\SQL Get Last UpdateDate from ODS Table"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:DTSID="{49f68344-5c97-433d-80ba-4e16548ea2e1}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="SQL Get Last UpdateDate from ODS Table"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{695C7E5A-5CCA-4AA0-A8C1-90A2890164AC}"
+                  SQLTask:SqlStatementSource="SELECT LastUpdatedate = COALESCE(MAX([CreatedOn]), 0) FROM [Source].[Customer]"
+                  SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  <SQLTask:ResultBinding
+                    SQLTask:ResultName="LastUpdatedate"
+                    SQLTask:DtsVariableName="User::LastUpdateDate" />
+                </SQLTask:SqlTaskData>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery\SQL TRUNCATE TABLE ODS Staging Source_Customer"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:DTSID="{91c13054-3975-45ab-9bf1-e6f4ff88b019}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="SQL TRUNCATE TABLE ODS Staging Source_Customer"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{695C7E5A-5CCA-4AA0-A8C1-90A2890164AC}"
+                  SQLTask:SqlStatementSource="TRUNCATE TABLE [LND].[Source_Customer]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              </DTS:ObjectData>
+            </DTS:Executable>
+          </DTS:Executables>
+          <DTS:PrecedenceConstraints>
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery.PrecedenceConstraints[Constraint]"
+              DTS:CreationName=""
+              DTS:DTSID="{4a3ccc55-68e1-4c1d-81e7-968a1f1404a0}"
+              DTS:From="Package\SEQ Main\SEQ Load Data With Error Recovery\SQL TRUNCATE TABLE ODS Staging Source_Customer"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint"
+              DTS:To="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container" />
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\SEQ Main\SEQ Load Data With Error Recovery.PrecedenceConstraints[Constraint_SQL Get Last UpdateDate from ODS Table_To_SQL TRUNCATE TABLE ODS Staging Source_Customer]"
+              DTS:CreationName=""
+              DTS:DTSID="{efc4ef60-4887-4047-9c2e-35b0d06aa2ee}"
+              DTS:From="Package\SEQ Main\SEQ Load Data With Error Recovery\SQL Get Last UpdateDate from ODS Table"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_SQL Get Last UpdateDate from ODS Table_To_SQL TRUNCATE TABLE ODS Staging Source_Customer"
+              DTS:To="Package\SEQ Main\SEQ Load Data With Error Recovery\SQL TRUNCATE TABLE ODS Staging Source_Customer" />
+          </DTS:PrecedenceConstraints>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL Log Package END"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{3c4fa119-ac14-468e-b151-44d619cd778a}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL Log Package END"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{bc04b1e6-e149-499b-8319-48c55d25a1f2}"
+          SQLTask:SqlStatementSource="declare @ExecutionId uniqueIdentifier&#xA;,@RowCount int &#xA;&#xA;set @ExecutionId =?&#xA;set @RowCount =?&#xA;&#xA;EXEC[ADM].[usp_UpdateETLLOGSSIS]  @ExecutionId= @ExecutionId&#xA;,@RowCount  =@RowCount &#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::ExecutionInstanceGUID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="72"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="User::DFTRowCount"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL Log Package Start"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{5b1e1050-2875-4072-830e-ec729c0cb4c9}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL Log Package Start"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{bc04b1e6-e149-499b-8319-48c55d25a1f2}"
+          SQLTask:SqlStatementSource="DECLARE @PackageName VARCHAR(100)&#xA;DECLARE @ExecutionId UNIQUEIDENTIFIER&#xA;DECLARE @ProjectName VARCHAR(100)&#xA;DECLARE @SSISServerExecutionID BIGINT&#xA;&#xA;SET @ProjectName = 'Source'&#xA;&#xA;set @PackageName =?&#xA;set @ExecutionId =?&#xA;set @SSISServerExecutionID =?&#xA;&#xA;EXEC [ADM].[usp_AddETLLOGSSIS] &#xA;    @PackageName = @PackageName&#xA;    ,@ExecutionId = @ExecutionId&#xA;    ,@ProjectName = @ProjectName&#xA;    ,@ParentLogId = @SSISServerExecutionID&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="130"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::ExecutionInstanceGUID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="72"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="2"
+            SQLTask:DtsVariableName="System::ServerExecutionID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{eb256b3e-9940-4592-9703-0666359ef20f}"
+      DTS:From="Package\SQL Log Package Start"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\SEQ Main" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{3c70f6cb-b9dc-4aec-835b-3eca135d2ffa}"
+      DTS:From="Package\SEQ Main"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\SQL Log Package END"
+      DTS:Value="2" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{C6F78FAA-E3EE-4324-B9AA-A4BCEB37D6D9}"
+      DTS:From="Package\SCR Verify ConnectionManagers"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\SQL Log Package Start" />
+  </DTS:PrecedenceConstraints>
+  <DTS:EventHandlers>
+    <DTS:EventHandler
+      DTS:refId="Package.EventHandlers[OnError]"
+      DTS:CreationName="OnError"
+      DTS:DTSID="{75A9B72C-291C-4CE6-A703-B45C3BCCE2E7}"
+      DTS:EventID="0"
+      DTS:EventName="OnError"
+      DTS:LocaleID="-1">
+      <DTS:Variables>
+        <DTS:Variable
+          DTS:CreationName=""
+          DTS:Description="The propagate property of the event"
+          DTS:DTSID="{06B9315C-FF2B-4B8B-8FA7-7801F9C2A33B}"
+          DTS:IncludeInDebugDump="6789"
+          DTS:Namespace="System"
+          DTS:ObjectName="Propagate">
+          <DTS:VariableValue
+            DTS:DataType="11">-1</DTS:VariableValue>
+        </DTS:Variable>
+      </DTS:Variables>
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package.EventHandlers[OnError]\Log Error"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{74a90a3c-4c55-4e61-aa8f-fc2ccee38850}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Log Error"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{bc04b1e6-e149-499b-8319-48c55d25a1f2}"
+              SQLTask:SqlStatementSource="declare  @ExecutionId UNIQUEIDENTIFIER&#xA; ,@message NVARCHAR(2048) &#xA;set @ExecutionId =?&#xA;set @message =?&#xA;&#xA;EXEC [ADM].[usp_AddETLLOGError] @ExecutionId , @message " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="System::ExecutionInstanceGUID"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="System::ErrorDescription"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:EventHandler>
+  </DTS:EventHandlers>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="231,42"
+          Id="Package\SCR Verify ConnectionManagers"
+          TopLeft="694,27" />
+        <NodeLayout
+          Size="125,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Fail Load Data\Log Error"
+          TopLeft="78.5,22.5" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="286,73"
+          Size="286,116"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Fail Load Data"
+          TopLeft="418.5,420.5" />
+        <NodeLayout
+          Size="301,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data"
+          TopLeft="109,209.5" />
+        <NodeLayout
+          Size="235,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\SCR Write Variable Status to Log"
+          TopLeft="138.5,107.5" />
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data.PrecedenceConstraints[Constraint_SCR Write Variable Status to Log_To_DFT load Source_Customer data]"
+          TopLeft="257.75,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="512,307"
+          Size="512,350"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data"
+          TopLeft="77.5,13.5" />
+        <NodeLayout
+          Size="298,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ SUCCESS Load Data\SQL ODS MERGE Staging Table to Destination"
+          TopLeft="31,16.5" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="354,75"
+          Size="354,118"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ SUCCESS Load Data"
+          TopLeft="3.50000000000006,420.5" />
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container.PrecedenceConstraints[Constraint]"
+          TopLeft="249.5,363.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-68.9999999999999,57"
+              Start="0,0"
+              End="-68.9999999999999,49.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.9065420560748" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.9065420560748"
+                    Point2="0,22.9065420560748"
+                    Point3="-4,22.9065420560748" />
+                  <mssgle:LineSegment
+                    End="-64.9999999999999,22.9065420560748" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-64.9999999999999,22.9065420560748"
+                    Point2="-68.9999999999999,22.9065420560748"
+                    Point3="-68.9999999999999,26.9065420560748" />
+                  <mssgle:LineSegment
+                    End="-68.9999999999999,49.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container.PrecedenceConstraints[Constraint 1]"
+          TopLeft="417.5,363.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="144,57"
+              Start="0,0"
+              End="144,49.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.9065420560748" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.9065420560748"
+                    Point2="0,22.9065420560748"
+                    Point3="4,22.9065420560748" />
+                  <mssgle:LineSegment
+                    End="140,22.9065420560748" />
+                  <mssgle:CubicBezierSegment
+                    Point1="140,22.9065420560748"
+                    Point2="144,22.9065420560748"
+                    Point3="144,26.9065420560748" />
+                  <mssgle:LineSegment
+                    End="144,49.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="56.75865234375,27.9065420560748,30.4826953125,9.7490234375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="237,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\Save table lastupdate info  to log"
+          TopLeft="81,570" />
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container.PrecedenceConstraints[Constraint 2]"
+          TopLeft="180.5,538.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="18.9999999999999,31.5"
+              Start="0,0"
+              End="18.9999999999999,24">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11.75"
+                    Point2="0,15.75"
+                    Point3="4,15.75" />
+                  <mssgle:LineSegment
+                    End="14.9999999999999,15.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.9999999999999,15.75"
+                    Point2="18.9999999999999,15.75"
+                    Point3="18.9999999999999,19.75" />
+                  <mssgle:LineSegment
+                    End="18.9999999999999,24" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="826,678"
+          Size="826,721"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container"
+          TopLeft="99,203.5" />
+        <NodeLayout
+          Size="279,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\SQL Get Last UpdateDate from ODS Table"
+          TopLeft="280,5.5" />
+        <NodeLayout
+          Size="379,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\SQL TRUNCATE TABLE ODS Staging Source_Customer"
+          TopLeft="230,107.5" />
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery.PrecedenceConstraints[Constraint]"
+          TopLeft="419.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="92.5,54"
+              Start="0,0"
+              End="92.5,46.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23"
+                    Point2="0,27"
+                    Point3="4,27" />
+                  <mssgle:LineSegment
+                    End="88.5,27" />
+                  <mssgle:CubicBezierSegment
+                    Point1="88.5,27"
+                    Point2="92.5,27"
+                    Point3="92.5,31" />
+                  <mssgle:LineSegment
+                    End="92.5,46.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery.PrecedenceConstraints[Constraint_SQL Get Last UpdateDate from ODS Table_To_SQL TRUNCATE TABLE ODS Staging Source_Customer]"
+          TopLeft="419.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="947,980"
+          Size="947,1022"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery"
+          TopLeft="22.5,40" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="993,1117"
+          Size="993,1160"
+          Id="Package\SEQ Main"
+          TopLeft="251,199" />
+        <NodeLayout
+          Size="186,42"
+          Id="Package\SQL Log Package END"
+          TopLeft="670,1372" />
+        <NodeLayout
+          Size="188,42"
+          Id="Package\SQL Log Package Start"
+          TopLeft="726,86" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="820,128">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-72.5,71"
+              Start="0,0"
+              End="-72.5,63.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,31.5"
+                    Point2="0,35.5"
+                    Point3="-4,35.5" />
+                  <mssgle:LineSegment
+                    End="-68.5,35.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-68.5,35.5"
+                    Point2="-72.5,35.5"
+                    Point3="-72.5,39.5" />
+                  <mssgle:LineSegment
+                    End="-72.5,63.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="747.5,1359">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="108.5,34"
+              Start="0,0"
+              End="101,34">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,30"
+                    Point2="0,34"
+                    Point3="4,34" />
+                  <mssgle:LineSegment
+                    End="101,34" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="27.195546875,39,50.60890625,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="809.5,69">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-83.5,38"
+              Start="0,0"
+              End="-76,38">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,34"
+                    Point2="0,38"
+                    Point3="-4,38" />
+                  <mssgle:LineSegment
+                    End="-76,38" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <DtsEventHandler
+    design-time-name="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data.EventHandlers[OnError]">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data.EventHandlers[OnError]\EXP Save error to user variable"
+          TopLeft="NaN,NaN" />
+      </GraphLayout>
+    </LayoutInfo>
+  </DtsEventHandler>
+  <TaskHost
+    design-time-name="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="237,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer"
+          TopLeft="219,271" />
+        <NodeLayout
+          Size="233,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer"
+          TopLeft="227,97" />
+        <NodeLayout
+          Size="269,42"
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\CNT Downloaded ROWS Source_Customer"
+          TopLeft="212,176" />
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data.Paths[Output]"
+          TopLeft="346.5,218">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-9,53"
+              Start="0,0"
+              End="-9,45.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.5"
+                    Point2="0,26.5"
+                    Point3="-4,26.5" />
+                  <mssgle:LineSegment
+                    End="-5,26.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-5,26.5"
+                    Point2="-9,26.5"
+                    Point3="-9,30.5" />
+                  <mssgle:LineSegment
+                    End="-9,45.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data.Paths[OLE DB Source Output]"
+          TopLeft="345,139">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37"
+              Start="0,0"
+              End="0,29.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_DST Staging Source_Customer">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\SEQ Main\SEQ Load Data With Error Recovery\Sequence Container\SEQ Load Data\DFT load Source_Customer data\OLE_SRC Source Source_Customer">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <DtsEventHandler
+    design-time-name="Package.EventHandlers[OnError]">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="125,42"
+          Id="Package.EventHandlers[OnError]\Log Error"
+          TopLeft="76,34" />
+      </GraphLayout>
+    </LayoutInfo>
+  </DtsEventHandler>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
