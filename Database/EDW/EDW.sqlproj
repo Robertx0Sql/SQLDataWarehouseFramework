@@ -126,14 +126,4 @@
       <DatabaseVariableLiteralValue>msdb</DatabaseVariableLiteralValue>
     </ArtifactReference>
   </ItemGroup>
-  <ItemGroup>
-    <SqlCmdVariable Include="ODS">
-      <DefaultValue>ODS</DefaultValue>
-      <Value>$(SqlCmdVar__1)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="SSISDB">
-      <DefaultValue>SSISDB</DefaultValue>
-      <Value>$(SqlCmdVar__2)</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
 </Project>
