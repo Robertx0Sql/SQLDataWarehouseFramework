@@ -1,34 +1,33 @@
-﻿CREATE PROCEDURE [ADM].[sp_generateMerge] (
-	@DestinationTable NVARCHAR(776)
-	,@JoinFieldList NVARCHAR(MAX) = NULL
+﻿CREATE PROCEDURE [ADM].[sp_generateMerge_XML] (
+	@target_table NVARCHAR(776)
+	,@cols_to_join_on NVARCHAR(MAX) = NULL
 	,@SourceTable VARCHAR(250) = NULL
 	,@SCD_Type TINYINT = 2 -- if 1 then updates current row (setting SyslastUpdateDateTime) , if 2 then archives current record and inserts new 
 	,@SysCurrentFlag_value TINYINT =1--  0 / NULL do not include SysCurrentflag in Join/MATCHING criteria ; if 1 then use SysCurrentflag= 1 ; if 2 then SysCurrentflag> 1 
-	,@delete_if_not_matched BIT = 0 -- When 1, deletes unmatched source rows from target, when 0 source rows will only be used to update existing rows or insert new.
+	,@delete_if_not_matched BIT = 1 -- When 1, deletes unmatched source rows from target, when 0 source rows will only be used to update existing rows or insert new.
 	,@debug_mode BIT = 0 -- If @debug_mode is set to 1, the SQL statements constructed by this procedure will be printed for later examination
 	,@results_to_text BIT = 0 -- When 0, outputs MERGE statement in an XML fragment. When NULL, only the @output OUTPUT parameter is returned.
 	,@output NVARCHAR(MAX) = NULL OUTPUT -- Use this output parameter to return the generated T-SQL batches to the caller (Hint: specify @batch_separator=NULL to output all statements within a single batch)
-	,@MergeSyntax BIT = 1 -- when 1 then Merge Syntax , when 0 then Insert / Update Statements 
-	 ,@cols_to_exclude NVARCHAR(MAX) = NULL -- List of columns to be excluded from the MERGE statement
-	,@Cols_for_Update_Compare NVARCHAR(MAX) =NULL 
-	,@IdentityColumnList NVARCHAR(MAX) =NULL OUTPUT 
+	,@MergeSyntax bit = 1 -- when 1 then Merge Syntax , when 0 then Insert / Update Statements 
+	 ,@cols_to_exclude nvarchar(max) = NULL -- List of columns to be excluded from the MERGE statement
+	,@Cols_for_Update_Compare NVARCHAR(max) =NULL 
+	,@IdentityColumnList NVARCHAR(max) =NULL OUTPUT 
 	,@SQLtargetColumns NVARCHAR(MAX) =NULL OUTPUT
 	,@DuplicateRecordCheck BIT = 1 
 	,@EmailProc VARCHAR(100) = NULL -- EMail Stored PROC
-	,@ErrorLogProc VARCHAR(100) = NULL --'[ADM].[usp_AddETLLOGError]' 
+	,@ErrorLogProc VARCHAR(100) = NULL 
 	,@SourceTableDescription VARCHAR(100) = NULL 
-	,@SQLNonNullColumns NVARCHAR(MAX)  =NULL OUTPUT 
-	,@columns_to_variables VARCHAR(MAX)  = 'ETLLogId;@LogId,SysLastUpdateDateTime;GETUTCDATE()'
+	,@SQLNonNullColumns NVARCHAR(MAX)  =NULL OUTPUT
 	)
 AS
 SET NOCOUNT ON; 
 BEGIN
-	PRINT '==== run sp_generateMerge ' + ISNULL(@DestinationTable, 'no target table defined'); 
-	DECLARE @objectid INT = OBJECT_ID(@DestinationTable);
+	PRINT '==== run sp_generateMerge ' + ISNULL(@target_table, 'no target table defined'); 
+	DECLARE @objectid INT = OBJECT_ID(@target_table);
 
 	IF @objectid IS NULL
 	BEGIN
-		PRINT 'DestinationTable ''' + ISNULL(@DestinationTable, '<NULL>') + ''' does not exist';
+		PRINT 'DestinationTable ''' + ISNULL(@target_table, '<NULL>') + ''' does not exist';
 		RETURN -1;
 	END;
 	
@@ -53,16 +52,11 @@ BEGIN
 		DECLARE @SQLInsertIdentityColumns NVARCHAR(MAX);
 		DECLARE @SQLJoinColumns NVARCHAR(MAX);
 		DECLARE @SQLUpdateComparisonColumns NVARCHAR(MAX);
-		DECLARE @SQLJoinDuplicateColumnList NVARCHAR(MAX); 
-		DECLARE @SQLSourceColumnsExist NVARCHAR(MAX);
-		DECLARE @SQLtargetColumnsExist	 NVARCHAR(MAX);
-		DECLARE @SQLSourceColumnsValues  NVARCHAR(MAX);
-		DECLARE @SQLSourceColumnsMergeOutput  NVARCHAR(MAX);
+		Declare @SQLJoinDuplicateColumnList nvarchar(max) 
 
 		DECLARE @syscolumntablelist NVARCHAR(MAX);
 		DECLARE @SysCurrentFlagFieldExistsFlag BIT =0 ;
 		DECLARE @SQLUpdate NVARCHAR(MAX);
-		
 
 		/*table variables */
 		DECLARE @TableJoinColumns AS TABLE (columnName VARCHAR(100));
@@ -81,7 +75,6 @@ BEGIN
 			,is_updateOnly BIT
 			,is_SysColumn BIT 
 			,is_nullable  BIT
-			,DefaultValue VARCHAR(100) COLLATE Latin1_General_CI_AS
 			);
 
 		--DO WORK HERE !
@@ -109,18 +102,15 @@ BEGIN
 					FOR XML PATH('')
 					), 1, 1, '');
 
-
-
-
 	BEGIN --@TableJoinColumns
-		SET @xml = CAST(('<X>' + REPLACE(@JoinFieldList, @delimiter, '</X><X>') + '</X>') AS XML);
+		SET @xml = CAST(('<X>' + REPLACE(@cols_to_join_on, @delimiter, '</X><X>') + '</X>') AS XML);
 
 		INSERT INTO @TableJoinColumns (columnName)
 		SELECT PARSENAME(LTRIM(RTRIM(N.value('.', 'varchar(100)'))), 1) AS VALUE
 		FROM @xml.nodes('X') AS T(N);
-		IF @debug_mode=1
-			SELECT QUOTENAME(columnName) FROM  @TableJoinColumns;
-	END;
+		if @debug_mode=1
+			select QUOTENAME(columnName) from  @TableJoinColumns
+	END
 
 	BEGIN --@TableUpdateComparisonColumns
 		SET @xml = CAST(('<X>' + REPLACE(@Cols_for_Update_Compare, @delimiter, '</X><X>') + '</X>') AS XML);
@@ -128,11 +118,11 @@ BEGIN
 		INSERT INTO @TableUpdateComparisonColumns (columnName)
 		SELECT PARSENAME(LTRIM(RTRIM(N.value('.', 'varchar(100)'))), 1) AS VALUE
 		FROM @xml.nodes('X') AS T(N);
-		IF @debug_mode=1
-			SELECT QUOTENAME(columnName) FROM  @TableUpdateComparisonColumns;
-	END;
+		if @debug_mode=1
+			select QUOTENAME(columnName) from  @TableUpdateComparisonColumns
+	END
 		
-		DECLARE @SQLExcludeTargetColumns NVARCHAR(MAX); 
+		declare @SQLExcludeTargetColumns nvarchar(max) 
 		
 	BEGIN --@TableUpdateComparisonColumns
 		SET @xml = CAST(('<X>' + REPLACE(@cols_to_exclude, @delimiter, '</X><X>') + '</X>') AS XML);
@@ -147,7 +137,7 @@ BEGIN
 					), 1, 1, '');
 
 		
-	END;
+	END
 		
 
 	SET @SQL ='INSERT INTO #TableDestinationColumn (
@@ -166,27 +156,15 @@ BEGIN
 			,is_nullable
 		FROM ' + DB_NAME() + '.sys.columns Col
 		left join (select * from (values ' + @syscolumntablelist + ' ) as T (columnName, is_updateOnly) ) T on col.name = T.columnName  
-		left join (select * from (values ' + COALESCE(@SQLExcludeTargetColumns,'('''')')  +' ) as TEX (columnName)) as TEX on col.name = TEX.columnName
+		left join (select * from (values ' + coalesce(@SQLExcludeTargetColumns,'('''')')  +' ) as TEX (columnName)) as TEX on col.name = TEX.columnName
 		WHERE TEX.ColumnName is NULL 
 			AND OBJECT_ID =' + CAST(@objectid AS VARCHAR(100));
 
 
-PRINT @SQL;
+print @SQL
 
 	EXECUTE sp_executesql @sql;--, N'@columnname nvarchar(128) OUTPUT', @columnname = @checkhashcolumn OUTPUT
 	
-	WITH CTE AS (	
-		SELECT 
-		 REVERSE(PARSENAME(REPLACE(REVERSE(VALUE), ';', '.'), 1)) AS ColumnName
-	   , REVERSE(PARSENAME(REPLACE(REVERSE(VALUE), ';', '.'), 2)) AS ColumnVariable
-  
-	FROM   STRING_SPLIT(@columns_to_variables, ',')
-		)
-		UPDATE TDC 
-		SET  DefaultValue  = ColumnVariable
-		FROM 	#TableDestinationColumn TDC 
-		INNER JOIN CTE 
-			ON CTE.ColumnName = TDC.Name;
 
 	IF EXISTS (
 			SELECT 1
@@ -209,7 +187,7 @@ PRINT @SQL;
 	IF EXISTS(
 	SELECT 1 
 	 FROM #TableDestinationColumn  Colmn
-					WHERE Name COLLATE Latin1_General_CI_AS  IN (SELECT columnName COLLATE Latin1_General_CI_AS  FROM @TableJoinColumns ) 
+					WHERE name COLLATE Latin1_General_CI_AS  IN (SELECT columnName COLLATE Latin1_General_CI_AS  FROM @TableJoinColumns ) 
 					AND is_identity =1 
 					) 
 					BEGIN 
@@ -220,7 +198,7 @@ PRINT @SQL;
 	
 	BEGIN -- create column lists
 	SELECT @SQLJoinColumns = STUFF((
-			SELECT 'AND [DST].' + QUOTENAME(Colmn.Name) + ' = [SRC].' + QUOTENAME(Colmn.Name)  
+			SELECT 'AND [DST].' + QUOTENAME(Colmn.NAME) + ' = [SRC].' + QUOTENAME(Colmn.NAME)  
 			FROM #TableDestinationColumn  Colmn
 			WHERE 
 				Name COLLATE Latin1_General_CI_AS IN (
@@ -233,7 +211,7 @@ PRINT @SQL;
 				
 
 		SELECT @SQLUpdateComparisonColumns = STUFF((
-			SELECT 'AND [DST].' + QUOTENAME(Colmn.Name) + ' != [SRC].' + QUOTENAME(Colmn.Name)  
+			SELECT 'AND [DST].' + QUOTENAME(Colmn.NAME) + ' != [SRC].' + QUOTENAME(Colmn.NAME)  
 			FROM #TableDestinationColumn  Colmn
 			WHERE 
 				Name COLLATE Latin1_General_CI_AS IN (
@@ -243,7 +221,7 @@ PRINT @SQL;
 			FOR XML PATH('')), 1, 4, '');
 
 		SELECT @SQLIdentityColumns = STUFF((
-				SELECT 'AND [DST].' + QUOTENAME(Colmn.Name) + ' !=-1 '
+				SELECT 'AND [DST].' + QUOTENAME(Colmn.NAME) + ' !=-1 '
 				FROM #TableDestinationColumn  Colmn
 				WHERE is_computed = 0
 					AND is_identity = 1 
@@ -252,7 +230,7 @@ PRINT @SQL;
 				), 1, 0, '');
 		
 			SELECT @IdentityColumnList = STUFF((
-			SELECT ','+ QUOTENAME (Colmn.Name)   
+			SELECT ','+ QUOTENAME (Colmn.NAME)   
 				FROM #TableDestinationColumn  Colmn
 				WHERE is_computed = 0
 					AND is_identity = 1 
@@ -261,7 +239,7 @@ PRINT @SQL;
 
 
 		SELECT @SQLInsertIdentityColumns = STUFF((
-				SELECT 'AND [DST].' + QUOTENAME(Colmn.Name) + ' IS NULL '
+				SELECT 'AND [DST].' + QUOTENAME(Colmn.NAME) + ' IS NULL '
 				FROM #TableDestinationColumn  Colmn
 				WHERE is_computed = 0
 					AND is_identity = 1 
@@ -270,38 +248,7 @@ PRINT @SQL;
 				), 1, 4, '');
 
 			SELECT @SQLSourceColumns= STUFF((
-					SELECT ', [SRC].' + QUOTENAME(Colmn.Name) 
-					FROM #TableDestinationColumn  Colmn
-					WHERE is_computed = 0
-						AND (is_identity = 0 OR @JoinhasIndentity =1 )
-						AND is_updateOnly =0
-						AND is_SysColumn=0
-					FOR XML PATH('')
-					), 1, 1, '');
-
-			SELECT @SQLSourceColumnsExist = STUFF((
-					SELECT ', [SRC].' + QUOTENAME(Colmn.Name) 
-					FROM #TableDestinationColumn  Colmn
-					WHERE is_computed = 0
-						AND (is_identity = 0 OR @JoinhasIndentity =1 )
-						AND is_updateOnly =0
-						AND is_SysColumn=0
-						AND DefaultValue IS NULL
-					FOR XML PATH('')
-					), 1, 1, '');
-			
-			SELECT @SQLSourceColumnsValues = STUFF((
-					SELECT ', ' + COALESCE(Colmn.DefaultValue ,  '[SRC].' + QUOTENAME(Colmn.Name) )
-					FROM #TableDestinationColumn  Colmn
-					WHERE is_computed = 0
-						AND (is_identity = 0 OR @JoinhasIndentity =1 )
-						AND is_updateOnly =0
-						AND is_SysColumn=0
-					FOR XML PATH('')
-					), 1, 1, '');
-			
-			SELECT @SQLSourceColumnsMergeOutput = STUFF((
-					SELECT ', ' + COALESCE(Colmn.DefaultValue + ' AS ' + QUOTENAME(Colmn.Name)  ,  '[SRC].' + QUOTENAME(Colmn.Name) )
+					SELECT ', [SRC].' + QUOTENAME(Colmn.NAME) 
 					FROM #TableDestinationColumn  Colmn
 					WHERE is_computed = 0
 						AND (is_identity = 0 OR @JoinhasIndentity =1 )
@@ -311,7 +258,7 @@ PRINT @SQL;
 					), 1, 1, '');
 
 			SELECT @SQLtargetColumns= STUFF((
-					SELECT ', [DST].' + QUOTENAME(Colmn.Name) 
+					SELECT ', [DST].' + QUOTENAME(Colmn.NAME) 
 					FROM #TableDestinationColumn  Colmn
 					WHERE is_computed = 0
 						AND (is_identity = 0 OR @JoinhasIndentity =1 )
@@ -319,20 +266,10 @@ PRINT @SQL;
 						AND is_SysColumn=0
 					FOR XML PATH('')
 					), 1, 1, '');
-					
-			SELECT @SQLtargetColumnsExist = STUFF(( /*Same as @SQLtargetColumns but ignoring columns where there is a Default value */
-					SELECT ', [DST].' + QUOTENAME(Colmn.Name) 
-					FROM #TableDestinationColumn  Colmn
-					WHERE is_computed = 0
-						AND (is_identity = 0 OR @JoinhasIndentity =1 )
-						AND is_updateOnly =0
-						AND is_SysColumn=0
-						AND DefaultValue IS NULL
-					FOR XML PATH('')
-					), 1, 1, '');
+	
 
-			SELECT @SQLUpdateColumns= COALESCE(STUFF((
-					SELECT ', [DST].' + QUOTENAME(Colmn.Name) + ' = ' + COALESCE(Colmn.DefaultValue  , '[SRC].' + QUOTENAME(Colmn.Name)   ) 
+			SELECT @SQLUpdateColumns= coalesce(STUFF((
+					SELECT ', [DST].' + QUOTENAME(Colmn.NAME) + ' = [SRC].' + QUOTENAME(Colmn.NAME)  
 					FROM #TableDestinationColumn  Colmn
 					WHERE is_computed = 0
 						AND is_identity = 0 
@@ -345,7 +282,7 @@ PRINT @SQL;
 					), 1, 1, ''), '/*No Update Columns as already used in Join Columns */') ;
 					
 			SELECT @SQLInsertColumns= STUFF((
-					SELECT ', ' + QUOTENAME(Colmn.Name) 
+					SELECT ', ' + QUOTENAME(Colmn.NAME) 
 					FROM #TableDestinationColumn  Colmn
 					WHERE is_computed = 0
 						AND (is_identity = 0 OR @JoinhasIndentity =1 )
@@ -356,19 +293,19 @@ PRINT @SQL;
 
 		
 		SELECT @SQLMergeOutputWhere = STUFF((
-			SELECT 'AND MRG.' + QUOTENAME(Colmn.Name) + ' IS NOT NULL '
+			SELECT 'AND MRG.' + QUOTENAME(Colmn.NAME) + ' IS NOT NULL '
 			FROM #TableDestinationColumn Colmn
 			WHERE 
 				is_computed = 0
 				AND (is_identity = 0 OR @JoinhasIndentity = 1)
-				AND Name COLLATE Latin1_General_CI_AS IN (
+				AND name COLLATE Latin1_General_CI_AS IN (
 					SELECT t.columnName COLLATE Latin1_General_CI_AS
 					FROM @TableJoinColumns t
 					)
 			FOR XML PATH('')), 1, 4, '');
 
 		SELECT @SQLJoinDuplicateColumnList = STUFF((
-				SELECT ',' + QUOTENAME(Colmn.Name) 
+				SELECT ',' + QUOTENAME(Colmn.NAME) 
 				FROM #TableDestinationColumn  Colmn
 				WHERE 
 					Name COLLATE Latin1_General_CI_AS IN (
@@ -376,31 +313,17 @@ PRINT @SQL;
 					FROM @TableJoinColumns t
 				)
 				FOR XML PATH('')), 1, 1, '');
-
-
-
-		DECLARE @SQLDuplicateColumnCASTList NVARCHAR(MAX); 
-		SELECT @SQLDuplicateColumnCASTList = STUFF((
-				SELECT ', "'' + CAST(SRC.'+QUOTENAME(Colmn.NAME) +' AS VARCHAR(1000)) + ''"' 
-				FROM #TableDestinationColumn  Colmn
-				WHERE 
-					Name COLLATE Latin1_General_CI_AS IN (
-					SELECT t.columnName COLLATE Latin1_General_CI_AS
-					FROM @TableJoinColumns t
-				)
-				FOR XML PATH('')), 1, 1, '');
-			
 
 				
-		SELECT @SQLNonNullColumns = STUFF((
-		SELECT ', '+ QUOTENAME (Colmn.Name)   
-			FROM #TableDestinationColumn  Colmn
-			WHERE is_computed = 0
-				AND (is_identity = 1 
-				OR is_nullable =0 )
-				AND is_SysColumn=0
-		FOR XML PATH('')),1, 1, '');  
-			END;
+	SELECT @SQLNonNullColumns = STUFF((
+	SELECT ', '+ QUOTENAME (Colmn.NAME)   
+		FROM #TableDestinationColumn  Colmn
+		WHERE is_computed = 0
+			AND (is_identity = 1 
+			or is_nullable =0 )
+			AND is_SysColumn=0
+	FOR XML PATH('')),1, 1, '');  
+		END
 			
 		IF EXISTS (SELECT 1 FROM #TableDestinationColumn WHERE name = 'SysCurrentFlag' 	AND is_SysColumn=1) --AND @SCD_Type =2
 		BEGIN 
@@ -408,7 +331,7 @@ PRINT @SQL;
 		END; 
 					
 		IF @SCD_Type = 2 
-			SET @SQLUpdate =  '[DST].[SysCurrentFlag] = 0,  [DST].[SysEndDateTime] = GETUTCDATE()   ';
+			SET @SQLUpdate =  '[DST].[SysCurrentFlag] = 0,  [DST].[SysEndDateTime] = GETDATE()   ';
 		ELSE 
 			SET @SQLUpdate = @SQLUpdateColumns; 
 
@@ -426,7 +349,7 @@ PRINT @SQL;
 			PRINT '@SQLUpdate           ' + ISNULL( @SQLUpdate, 'ERROR');
 			PRINT '@SQLInsertIdentityColumns' + ISNULL( @SQLInsertIdentityColumns, 'ERROR');
 	END; 
-	IF  @SQLInsertIdentityColumns IS NULL 
+	if  @SQLInsertIdentityColumns IS NULL 
 	BEGIN 
 	RAISERROR (
 			'Aborting dbo.sp_generatemerge  as no Identity Column defined ' -- Message text.  
@@ -434,7 +357,7 @@ PRINT @SQL;
 			,1 -- State.  
 			);
 
-	END; 
+	END 
 
 	SET @output ='';
 	
@@ -449,67 +372,63 @@ PRINT @SQL;
 	DECLARE @t3 VARCHAR(100) =  @t2 + @t;
 	DECLARE @t4 VARCHAR(100) =  @t3 + @t;
 
-	IF NOT (COALESCE(@MergeSyntax, 1) = 1 ) OR @DuplicateRecordCheck =1
+	if not (coalesce(@MergeSyntax, 1) = 1 ) or @DuplicateRecordCheck =1
 	BEGIN
 
+
+
 			
-		IF (@SourceTableDescription IS NULL)
-			SET @SourceTableDescription = @SourceTable;
-		/* change non XML chars to Allowed chars*/
-		SET @SourceTableDescription =  REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@SourceTableDescription, '[',''), ']',''), '<',''), '>',''), '&','_'), '.','_');
+		if (@SourceTableDescription is null)
+		set @SourceTableDescription = @SourceTable
 
-		SET @output += @lf + @t + @t + 'BEGIN /*Duplicate Record Check */';
+		Set @SourceTableDescription =  REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@SourceTableDescription, '[',''), ']',''), '<',''), '>',''), '&','_'), '.','_')
 
-		SET @output += @lf + @t + @t2 + 'DECLARE @DuplicateRecords VARCHAR(max);'
+		SET @output += @lf + @t + @t + 'BEGIN /*Duplicate Record Check */'
 
-		SET @output += @lf + @t + @ti + @t + 'SELECT @DuplicateRecords = '''+@SQLJoinDuplicateColumnList+''' +  SUBSTRING(('
-		SET @output += @lf + @t + @ti + @t + @t + 'SELECT '', ('+@SQLDuplicateColumnCASTList+')'''
-		SET @output += @lf + @t + @ti + @t + @t2 + ' FROM '
-		SET @output += @lf + @t + @ti + @t + @t2 + ' '+ @SourceTable +' SRC'
-		SET @output += @lf + @t + @ti + @t + @t + ' GROUP BY '
-		SET @output += @lf + @t + @ti + @t + @t2 + @SQLJoinDuplicateColumnList
-		SET @output += @lf + @t + @ti + @t + @t2 + ' '
-		SET @output += @lf + @t + @ti + @t + @t2 + ' HAVING COUNT(1) !=1'
-		SET @output += @lf + @t + @ti + @t + 'FOR XML PATH('''')'
-		SET @output += @lf + @t + @ti + @t + '), 3, 200000);'
-
-		SET @output += @lf + @t + @t2 + 'IF @DuplicateRecords IS NOT NULL';
+		SET @output += @lf + @t + @t2 + 'DECLARE @DuplicateRowXml XML;'
+		SET @output += @lf + @t + @t2 + 'SET @DuplicateRowXml  =('
+		SET @output += @lf + @t + @t2 + '	SELECT  ' + @SQLSourceColumns
+		SET @output += @lf + @t + @t2 + '	FROM ' + @SourceTable +' src '
+		SET @output += @lf + @t + @t2 + '	INNER JOIN ('
+		SET @output += @lf + @t + @t2 + '				SELECT ' + @SQLJoinDuplicateColumnList 
+		SET @output += @lf + @t + @t2 + '				FROM ' + @SourceTable  
+		SET @output += @lf + @t + @t2 + '				GROUP BY ' + @SQLJoinDuplicateColumnList 
+		SET @output += @lf + @t + @t2 + '				HAVING COUNT(1) != 1 '
+		SET @output += @lf + @t + @t2 + '			) DST 	'
+		SET @output += @lf + @t + @t2 + '			ON '  + @SQLJoinColumns
+		SET @output += @lf + @t + @t2 + '		FOR XML RAW(''row'') ,ROOT(''' + @SourceTableDescription +  ''') '
+		SET @output += @lf + @t + @t2 + ')'
 		
-		IF ( @ErrorLogProc IS NOT NULL) 
+		SET @output += @lf + @t + @t2 + 'IF  @DuplicateRowXml  IS NOT NULL '
+		
+		if ( @ErrorLogProc is not null and @EmailProc is not null ) and 1=0
 		BEGIN
-			SET @output += @lf + @t + @t2 + 'BEGIN';
-			SET @output += @lf + @t + @t2 + '	EXEC '+ @ErrorLogProc +' @LogId = @LogId, @Error = @DuplicateRecords ,@UserTableDescription = ''' + @SourceTableDescription +  ''' , @ErrorType = ''Duplicate'';';
-			SET @output += @lf + @t + @t2 + '	SET @ETLLOGUpdateMessage =''Duplicates found in Staging Data. See LogError SubTable for Details.''';
-			SET @output += @lf + @t + @t2 + '	SET @ErrorFlag = 1';
-			IF ( @ErrorLogProc IS NOT NULL AND @EmailProc IS NOT NULL ) 
-			BEGIN
-				SET @output += @lf + @t + @t2 + '	EXECUTE '+ @EmailProc+'  @LogId;';
-			END;
-			SET @output += @lf + @t + @t3 + 'RAISERROR (';
-			SET @output += @lf + @t + @t4 + '''Duplicates found in Staging Data. Select * from ADM.ETLLOGError WHERE LogId = %d'' -- Message text.  ';
-			SET @output += @lf + @t + @t4 + ',16 -- Severity.  ';
-			SET @output += @lf + @t + @t4 + ',1 -- State.  ';
-			SET @output += @lf + @t + @t4 + ',@LogId';
-			SET @output += @lf + @t + @t4 + ');';
-			SET @output += @lf + @t + @t2 + 'END';
-		END; 
+
+			SET @output += @lf + @t + @t2 + 'BEGIN'
+			SET @output += @lf + @t + @t2 + '	EXEC '+ @ErrorLogProc +'  @LogId, @DuplicateRowXml ,''' + @SourceTableDescription +  ''' ,''Duplicate'';'
+			SET @output += @lf + @t + @t2 + '	SET @ETLLOGUpdateMessage =''Duplicates found in Staging Data. See LogError SubTable for Details.'''
+			SET @output += @lf + @t + @t2 + '	SET @ErrorFlag = 1'
+			SET @output += @lf + @t + @t2 + '	EXECUTE '+ @EmailProc+'  @LogId;'
+			SET @output += @lf + @t + @t2 + 'END'
+		END 
 		ELSE
-		
 		BEGIN
-			SET @output += @lf + @t + @t2 + 'BEGIN';
-			SET @output += @lf + @t + @t3 + 'RAISERROR (';
-			SET @output += @lf + @t + @t4 + '''Aborting ETL due to Duplicates :  %s'' -- Message text.  ';
-			SET @output += @lf + @t + @t4 + ',16 -- Severity.  ';
-			SET @output += @lf + @t + @t4 + ',1 -- State.  ';
-			SET @output += @lf + @t + @t4 + ',@DuplicateRecords';
-			SET @output += @lf + @t + @t4 + ');';
-			SET @output += @lf + @t + @t2 + 'END;';
-		END;
-		SET @output += @lf + @t + @t + 'END;	';	
+			SET @output += @lf + @t + @t2 + 'BEGIN'
+			SET @output += @lf + @t + @t3 + 'DECLARE @DuplicateString VARCHAR(2000) '
+			SET @output += @lf + @t + @t3 + 'SET @DuplicateString = CAST(@DuplicateRowXml AS VARCHAR(2000))'
+			SET @output += @lf + @t + @t3 + 'RAISERROR ('
+			SET @output += @lf + @t + @t4 + '''Aborting ETL due to Duplicates :  %s'' -- Message text.  '
+			SET @output += @lf + @t + @t4 + ',16 -- Severity.  '
+			SET @output += @lf + @t + @t4 + ',1 -- State.  '
+			SET @output += @lf + @t + @t4 + ',@DuplicateString'
+			SET @output += @lf + @t + @t4 + ');'
+			SET @output += @lf + @t + @t2 + 'END;'
+		END
+		SET @output += @lf + @t + @t + 'END;	'	
 		
-		SET @output += @lf;
+		SET @output += @lf
 		
-	END; 
+	END 
 
 
 	IF @JoinhasIndentity =1
@@ -522,56 +441,40 @@ PRINT @SQL;
 	BEGIN 
 		SET @output += @lf + @t + 'WITH ' + @SourceTable + ' AS ()';
 	END; 
-
-	DECLARE @TempTableNameSCD_Type2 VARCHAR(100);
-	IF @MergeSyntax =1 OR @MergeSyntax IS NULL
+	if @MergeSyntax =1 or @MergeSyntax is null
 	BEGIN 
 		IF @SCD_Type = 2
 		BEGIN 
-			SET @TempTableNameSCD_Type2 = '#temp_STG_'+OBJECT_NAME(@objectid);
-			
-			SET @output += @lf + @ti + '/* Use #Temp table to workaround the merge/foreign key error that would occur if inserting directing into the target table */';
-
-	 		SET @output += @lf + @ti + 'SELECT ' + @SQLInsertColumns;
-			SET @output += @lf + @ti + 'INTO '+ @TempTableNameSCD_Type2; 
-			SET @output += @lf + @ti + 'FROM ' + @SQLDestinationTableName; 
-			SET @output += @lf + @ti + 'WHERE 1=0 ';
-			SET @output += @lf; 
-
-			SET @output += @lf + @ti + 'INSERT INTO ' + @TempTableNameSCD_Type2 + '(' + @SQLInsertColumns + ')';
+			SET @output += @lf + @ti + 'INSERT INTO ' + @SQLDestinationTableName + '(' + @SQLInsertColumns + ')';
 			SET @output += @lf + @ti + 'SELECT ' + @SQLInsertColumns; 
 			SET @output += @lf + @ti + 'FROM ( ';
 		END;	  
 
 		SET @output += @lf + @ti + @t + 'MERGE INTO ' + @SQLDestinationTableName + ' AS DST ';
-		
-		BEGIN 
-			SET @output += @lf + @ti + @t + 'USING ' + @SourceTable + ' AS SRC ';
-		END; 
+		SET @output += @lf + @ti + @t + 'USING ' + @SourceTable + ' AS SRC ';
 		SET @output += @lf + @ti + @t2 + 'ON ('; 
 		SET @output += @lf + @ti + @t3 + REPLACE(@SQLJoinColumns , 'AND [DST].',  @lf + @ti + @t + @t + 'AND [DST].'); 
 			
 		SET @output += @lf + @ti + @t2 + ')' ;
 
-		IF @SysCurrentFlagFieldExistsFlag =1  AND ISNULL(@SysCurrentFlag_value, 0)  >0
+		IF @SysCurrentFlagFieldExistsFlag =1  and ISNULL(@SysCurrentFlag_value, 0)  >0
 		BEGIN 
 		SET @output += @lf + @ti + @t2 + 
 			CASE 
 				WHEN @SysCurrentFlag_value = 1 THEN 'AND [DST].[SysCurrentFlag] IN (1)' 
 				WHEN @SysCurrentFlag_value >= 2 THEN 'AND [DST].[SysCurrentFlag] IN (1,2)' 
 			END; 
-		END;
-		
-		
+		END; 
+	
 		SET @output += @lf + @ti + @t + 'WHEN NOT MATCHED BY TARGET ';
 		SET @output += @lf + @ti + @t2 + 'THEN ';
 		SET @output += @lf + @ti + @t3 + 'INSERT (' + @SQLInsertColumns + ') ';
-		SET @output += @lf + @ti + @t3 + 'VALUES (' + @SQLSourceColumnsValues + ') ';
+		SET @output += @lf + @ti + @t3 + 'VALUES (' + @SQLSourceColumns + ') ';
 		SET @output += @lf + @ti + @t + 'WHEN MATCHED ';
 		SET @output += @lf + @ti + @t2 + 'AND  EXISTS(';
-		SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLSourceColumnsExist;
+		SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLSourceColumns;
 		SET @output += @lf + @ti + @t3 + 'EXCEPT';
-		SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLtargetColumnsExist;
+		SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLtargetColumns;
 		SET @output += @lf + @ti + @t2 + ')';
 		SET @output += @lf + @ti + @t2 + 'THEN ';
 		SET @output += @lf + @ti + @t3 + 'UPDATE  ';
@@ -579,75 +482,65 @@ PRINT @SQL;
 	
 		SET @output += @lf + @ti + @t4 + REPLACE( @SQLUpdate, ', [DST].' , @lf + @ti + @t4 + ',[DST].');
 
-		IF @delete_if_not_matched =1 
-		BEGIN
+		if @delete_if_not_matched =1 
+		begin
 			SET @output += @lf + @ti + @t + 'WHEN NOT MATCHED BY SOURCE';
 			SET @output += @lf + @ti + @t2 + 'THEN';
-			SET @output += @lf + @ti + @t3 + 'DELETE';
-		END;
+			SET @output += @lf + @ti + @t3 + 'DELETE'
+		end
 
 		IF @SCD_Type = 2
 		BEGIN 
-			SET @output += @lf + @ti + @t + 'OUTPUT ' + @SQLSourceColumnsMergeOutput + ' ,$Action AS MergeAction';
+			SET @output += @lf + @ti + @t + 'OUTPUT ' + @SQLSourceColumns + ' ,$Action AS MergeAction';
 			SET @output += @lf + @ti + @t + ') AS MRG  ';
 			SET @output += @lf + @ti + 'WHERE MRG.MergeAction = ''UPDATE''';
 			SET @output += @lf + @ti + 'AND ' + ISNULL(@SQLMergeOutputWhere, '/*TODO : SET @SQLMergeOutputWhere COLUMNS */'); 
-		END;
+			
 
-		SET @output += ';';  --Merge Terminator
-		SET @output += @lf; 
-		SET @output += @lf + @ti + 'SELECT @RowUpdate = @@ROWCOUNT; ';
-		
-		IF @SCD_Type = 2
-		BEGIN 
-			SET @output += @lf; 
-			SET @output += @lf + @ti + 'INSERT INTO ' + @SQLDestinationTableName + '(' + @SQLInsertColumns + ')';
-			SET @output += @lf + @ti + 'SELECT ' + @SQLInsertColumns;
-			SET @output += @lf + @ti + 'FROM '+ @TempTableNameSCD_Type2; 
-			SET @output += @lf; 
-			SET @output += @lf + @ti + 'SELECT @RowUpdate += @@ROWCOUNT; ';
-		END; 
-	END;
+		END;
+		SET @output += ';'; 
+	END
 	ELSE 
 	BEGIN -- TSQL INSERT /Update Statements 
 
-		IF LEN(@cols_to_exclude) > 0 
+		if len(@cols_to_exclude) > 0 
 		BEGIN 
-			SET @output += @lf + @ti + @t + '--Note : Ignoring Columns from Insert/Update: "' + @cols_to_exclude +'"';
-			SET @output += @lf; 
-		END; 
+			SET @output += @lf + @ti + @t + '--Note : Ignoring Columns from Insert/Update: "' + @cols_to_exclude +'"'
+			SET @output += @lf 
+		END 
 
 		BEGIN -- UPDATE
-			SET @output += @lf + @ti + @t + 'UPDATE DST';
-			SET @output += @lf + @ti + @t + 'SET ';
-			SET @output += @lf + @ti + @t2 + REPLACE(@SQLUpdateColumns , '[DST].' , '');
+			SET @output += @lf + @ti + @t + 'UPDATE DST'
+			SET @output += @lf + @ti + @t + 'SET '
+			SET @output += @lf + @ti + @t2 + REPLACE(@SQLUpdateColumns , '[DST].' , '')
 			SET @output += @lf + @ti + @t + 'FROM ' + @SQLDestinationTableName + ' AS DST ';
 			SET @output += @lf + @ti + @t + 'INNER JOIN ' + @SourceTable + ' AS SRC ';
 			SET @output += @lf + @ti + @t2 + 'ON '; 
 			SET @output += @lf + @ti + @t3 + REPLACE(@SQLJoinColumns , 'AND [DST].',  @lf + @ti + @t3 + 'AND [DST].'); 
 
-			IF LEN(@SQLUpdateComparisonColumns) > 0 
+			IF len(@SQLUpdateComparisonColumns) > 0 
 			BEGIN 
-				SET @output += @lf + @ti + @t + 'WHERE ' + @SQLUpdateComparisonColumns;
-			END; 
+				SET @output += @lf + @ti + @t + 'WHERE ' + @SQLUpdateComparisonColumns
+			END 
 			ELSE 
 			BEGIN 
 				SET @output += @lf + @ti + @t + 'WHERE EXISTS(';
-				SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLtargetColumnsExist;
+				SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLtargetColumns;
 				SET @output += @lf + @ti + @t3 + 'EXCEPT';
-				SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLSourceColumnsExist;
+				SET @output += @lf + @ti + @t3 + 'SELECT ' + @SQLSourceColumns;
 				SET @output += @lf + @ti + @t2 + ')';
-			END; 
+			END 
 			SET @output += ';'; 
+				
 			SET @output += @lf ;
-			SET @output += @lf + @ti + @t  + 'SELECT @RowUpdate = @@ROWCOUNT; ';
+			SET @output += @lf + @ti + @t  + 'SELECT @RowUpdate = @@ROWCOUNT; '
 			SET @output += @lf ;
-		END; 
+		END 
 
 
 		BEGIN -- INSERT 
 			SET @output += @lf + @ti + @t + 'INSERT INTO ' + @SQLDestinationTableName + '(' + @SQLInsertColumns + ')';
-			SET @output += @lf + @ti + @t + 'SELECT ' +  @SQLSourceColumnsMergeOutput; -- @SQLSourceColumns; 
+			SET @output += @lf + @ti + @t + 'SELECT ' + @SQLSourceColumns; 
 			SET @output += @lf + @ti + @t + 'FROM ' + @SourceTable + ' AS SRC ';
 			SET @output += @lf + @ti + @t + 'LEFT JOIN ' + @SQLDestinationTableName + ' AS DST ';
 			SET @output += @lf + @ti + @t2 + 'ON '; 
@@ -656,12 +549,12 @@ PRINT @SQL;
 			SET @output += ';';
 		
 			SET @output += @lf ;
-			SET @output += @lf + @ti + @t  + 'SELECT @RowInsert = @@ROWCOUNT; ';
+			SET @output += @lf + @ti + @t  + 'SELECT @RowInsert = @@ROWCOUNT; '
 			SET @output += @lf ;
 		
-		END; 
+		END 
 
-	END; 
+	END 
 	
 	IF @JoinhasIndentity =1
 	BEGIN 
@@ -669,10 +562,10 @@ PRINT @SQL;
 	END; 
 	PRINT '==== END sp_generateMerge ';
 
-	IF @results_to_text !=1 
+	 IF @results_to_text !=1 
 	BEGIN 
-		--SELECT @output;
-		SELECT CAST('<![CDATA[--' + @lf + @output + @lf + '--]]>' AS XML);
+	--SELECT @output;
+	SELECT CAST('<![CDATA[--' + @lf + @output + @lf + '--]]>' AS XML);
 	END; 
 		
 END;

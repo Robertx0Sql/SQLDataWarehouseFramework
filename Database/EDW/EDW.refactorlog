@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="904e7b96-33fd-44c7-9956-b484319075bb" ChangeDateTime="10/24/2021 14:46:45">
+    <Property Name="ElementName" Value="[ADM].[ETLLOGError].[ErrorXML]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[ADM].[ETLLOGError]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[Error]" />
+  </Operation>
+</Operations>

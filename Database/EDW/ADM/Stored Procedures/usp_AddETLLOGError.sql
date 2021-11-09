@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [ADM].[usp_AddETLLOGError] 
 	@LOGID INT
-	,@ErrorXML XML
+	,@Error NVARCHAR(MAX) 
 	,@UserTableDescription VARCHAR(250)
 	,@ErrorType VARCHAR(10)
 AS
@@ -9,12 +9,12 @@ BEGIN
 
 	INSERT INTO [ADM].[ETLLOGError] (
 		[LOGID]
-		,[ErrorXML]
+		,[Error]
 		,UserTableDescription
 		,[ErrorType]
 		)
 	SELECT @LOGID
-		,@ErrorXML
+		,@Error
 		,@UserTableDescription
 		,@ErrorType;
 

@@ -6,7 +6,7 @@ BEGIN
 	SET NOCOUNT ON 
 
 	SELECT TOP 1 
-		[ErrorXML] 
+		[Error] 
 		,[ErrorType]
 	FROM [ADM].[ETLLOGError]
 	WHERE [LOGID] = @LOGID

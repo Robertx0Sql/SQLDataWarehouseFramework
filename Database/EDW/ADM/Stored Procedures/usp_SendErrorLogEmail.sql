@@ -12,7 +12,7 @@ BEGIN
 	DECLARE @RecipientEMails VARCHAR(50);
 	--use a cursor to make sure any unprocessed logs are picked up (although there shouldn't be any of course)
 	DECLARE C1 CURSOR FOR
-	SELECT 'ETL ' + ErrorType + ' in ' + UserTableDescription,CAST(ErrorXML AS VARCHAR(MAX)) ,ETLLOGErrorID
+	SELECT 'ETL ' + ErrorType + ' in ' + UserTableDescription, CAST(Error AS VARCHAR(MAX)) ,ETLLOGErrorID
 	FROM [ADM].ETLLOGError ele
 	WHERE ele.EmailSentDateTime IS NULL 
 		AND ele.LOGID=@ReturnCode;
