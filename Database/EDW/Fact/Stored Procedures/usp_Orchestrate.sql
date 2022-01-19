@@ -1,4 +1,4 @@
-﻿CREATE   PROCEDURE Fact.[usp_Orchestrate]
+﻿CREATE PROCEDURE Fact.[usp_Orchestrate]
  @ParentLogId BIGINT = NULL
 AS
 BEGIN

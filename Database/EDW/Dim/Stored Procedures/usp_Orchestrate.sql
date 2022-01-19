@@ -1,4 +1,4 @@
-﻿CREATE    PROCEDURE [Dim].[usp_Orchestrate]
+﻿CREATE PROCEDURE [Dim].[usp_Orchestrate]
  @ParentLogId BIGINT = NULL
 AS
 BEGIN
@@ -12,9 +12,8 @@ BEGIN
             ,@ParentLogId = @ParentLogId
 
 		BEGIN
-			
-			EXEC [Dim].[usp_UpdateCustomer] @ParentLogId = @ParentLogId
-
+			/* List of DIM ETL PROCS*/
+			PRINT ''
 		END
 
 		EXECUTE [ADM].[usp_UpdateETLLog] @LogID = @LogID
